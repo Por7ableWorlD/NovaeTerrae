@@ -1,6 +1,6 @@
 @echo off
 
-set ProjectName=CodeUE_Tips
+set ProjectName=NovaeTerrae
 
 FOR /F "tokens=2* skip=2" %%a in ('reg query "HKEY_LOCAL_MACHINE\SOFTWARE\EpicGames\Unreal Engine\5.3" /v "InstalledDirectory"') do set EnginePath=%%b
 
