@@ -1,3 +1,8 @@
+# FMOD Studio Plugin
+Plugins/FMODStudio/Docs/*
+Plugins/FMODStudio/Resources/*
+Plugins/FMODStudio/FMODStudio.uplugin
+
 # Visual Studio user specific files
 .vs/
 
