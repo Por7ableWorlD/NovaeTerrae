@@ -8,11 +8,11 @@ public class NovaeTerrae : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "FMODStudio" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "FMODStudio", "EnhancedInput" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
-        PublicIncludePaths.AddRange(new string[] { "NovaeTerrae/Public/Core", "NovaeTerrae/Public/Core/Characters" });
+        PublicIncludePaths.AddRange(new string[] { "NovaeTerrae/Public/Core", "NovaeTerrae/Public/Core/Characters", "NovaeTerrae/Public/Core/Components" });
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
