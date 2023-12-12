@@ -1,0 +1,32 @@
+{
+	"FileVersion": 3,
+	"Version": 1,
+	"VersionName": "1.2",
+	"FriendlyName": "Cyrus 365 - Look At Actor",
+	"Description": "Copyright © 2023 Cyrus365, All Rights Reserved.",
+	"Category": "Gameplay",
+	"CreatedBy": "Cyrus 365",
+	"CreatedByURL": "https://www.cyrus365.com",
+	"DocsURL": "https://docs.google.com/document/d/1-DGpOdi5OpUk45m9W9rpvVufDiRkxC-m3YymO1Ot6jU/edit?usp=sharing",
+	"MarketplaceURL": "com.epicgames.launcher://ue/marketplace/product/50a1acc35b5f438fb5c11dcc6b58c2ad",
+	"SupportURL": "mailto:ue_support@cyrus365.com",
+	"EngineVersion": "5.3.0",
+	"CanContainContent": true,
+	"Installed": true,
+	"Modules": [
+		{
+			"Name": "C3_LAA",
+			"Type": "Runtime",
+			"LoadingPhase": "Default",
+			"PlatformAllowList": [
+				"Win64",
+				"Mac",
+				"IOS",
+				"Android",
+				"Linux",
+				"LinuxArm64",
+				"TVOS"
+			]
+		}
+	]
+}

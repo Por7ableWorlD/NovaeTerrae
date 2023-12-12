@@ -8,7 +8,7 @@ public class NovaeTerrae : ModuleRules
 	{
 		PCHUsage = PCHUsageMode.UseExplicitOrSharedPCHs;
 	
-		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "FMODStudio", "EnhancedInput" });
+		PublicDependencyModuleNames.AddRange(new string[] { "Core", "CoreUObject", "Engine", "InputCore", "FMODStudio", "EnhancedInput", "C3_LAA" });
 
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 

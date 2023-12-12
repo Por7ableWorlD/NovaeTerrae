@@ -15,12 +15,22 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     // You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
+    // Don't rotate when the controller rotates. Let that just affect the camera.
+    bUseControllerRotationPitch = false;
+    bUseControllerRotationYaw = false;
+    bUseControllerRotationRoll = false;
+
+    // Configure character movement
+    GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...
+    GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
+
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
     SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
 
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
+    CameraComponent->bUsePawnControlRotation = false;
 }
 
 void ANTBaseCharacter::BeginPlay()
@@ -48,7 +58,7 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     if (!Subsystem)
         return;
 
-    Subsystem->AddMappingContext(InputMappingCpntext, 0);
+    Subsystem->AddMappingContext(InputMappingContext, 0);
 
     UEnhancedInputComponent* PlayerInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 
@@ -57,7 +67,7 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         PlayerInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ANTBaseCharacter::Movement);
         PlayerInput->BindAction(MoveAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopMovement);
 
-        PlayerInput->BindAction(LookAroundAction, ETriggerEvent::Triggered, this, &ANTBaseCharacter::LookAround);
+        PlayerInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &ANTBaseCharacter::Look);
 
         PlayerInput->BindAction(JumpAction, ETriggerEvent::Started, this, &ANTBaseCharacter::Jump);
 
@@ -75,8 +85,18 @@ void ANTBaseCharacter::Movement(const FInputActionValue& InputValue)
 
     bIsMovingForward = InputVector.Y > 0.0f;
 
-    AddMovementInput(GetActorForwardVector(), InputVector.Y);
-    AddMovementInput(GetActorRightVector(), InputVector.X);
+    // find out which way is forward
+    const FRotator Rotation = Controller->GetControlRotation();
+    const FRotator YawRotation(0, Rotation.Yaw, 0);
+
+    // get forward vector
+    const FVector ForwardDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::X);
+
+    // get right vector
+    const FVector RightDirection = FRotationMatrix(YawRotation).GetUnitAxis(EAxis::Y);
+
+    AddMovementInput(ForwardDirection, InputVector.Y);
+    AddMovementInput(RightDirection, InputVector.X);
 }
 
 void ANTBaseCharacter::OnStopMovement()
@@ -84,7 +104,7 @@ void ANTBaseCharacter::OnStopMovement()
     bIsMovingForward = false;
 }
 
-void ANTBaseCharacter::LookAround(const FInputActionValue& InputValue)
+void ANTBaseCharacter::Look(const FInputActionValue& InputValue)
 {
     FVector2D InputVector = InputValue.Get<FVector2D>();
 
@@ -96,11 +116,18 @@ void ANTBaseCharacter::LookAround(const FInputActionValue& InputValue)
     if (!PlayerController)
         return;
 
-    PlayerController->SetControlRotation(
-        FRotator(FMath::ClampAngle(PlayerController->GetControlRotation().Pitch + InputVector.Y * -1.0f, MinCameraAngle, MaxCameraAngle),
-        PlayerController->GetControlRotation().Yaw + InputVector.X,
-        PlayerController->GetControlRotation().Roll));
-    
+#pragma region Rotation with camera
+         double inRoll = PlayerController->GetControlRotation().Roll;
+         double inPitch = PlayerController->GetControlRotation().Pitch;
+         double inYaw = PlayerController->GetControlRotation().Yaw;
+
+         inPitch = FMath::ClampAngle(inPitch + InputVector.Y * -1.0f, MinCameraAngle, MaxCameraAngle);
+
+         PlayerController->SetControlRotation(FRotator(inPitch, inYaw + InputVector.X, inRoll));
+#pragma endregion
+
+    //double inPitch = PlayerController->GetControlRotation().Pitch;
+    //inPitch = FMath::ClampAngle(inPitch + InputVector.Y * -1.0f, MinCameraAngle, MaxCameraAngle);
 
     //AddControllerYawInput(InputVector.X);
     //AddControllerPitchInput(InputVector.Y);

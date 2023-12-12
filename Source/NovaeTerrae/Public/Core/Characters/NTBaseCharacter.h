@@ -33,21 +33,22 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
 
-    // Enhanced Inputs
+#pragma region Enhanced Inputs
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-    class UInputMappingContext* InputMappingCpntext;
+    class UInputMappingContext* InputMappingContext;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* MoveAction;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-    class UInputAction* LookAroundAction;
+    class UInputAction* LookAction;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* JumpAction;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* RunAction;
+#pragma endregion
 
 private:
     bool bWantsToRun = false;
@@ -62,7 +63,7 @@ private:
     void Movement(const FInputActionValue& InputValue);
     void OnStopMovement();
 
-    void LookAround(const FInputActionValue& InputValue);
+    void Look(const FInputActionValue& InputValue);
 
     void OnStartRunnig();
     void OnStopRunnig();
