@@ -6,11 +6,8 @@
 #include "Components/ActorComponent.h"
 #include "NTHealthComponent.generated.h"
 
-class FHealthUpdate;
-class FActorDeath;
-
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FHealthUpdate);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FActorDeath);
+DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentHealthChangedSignature, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class NOVAETERRAE_API UNTHealthComponent : public UActorComponent
@@ -20,28 +17,44 @@ class NOVAETERRAE_API UNTHealthComponent : public UActorComponent
 public:
     UNTHealthComponent();
 
-    UFUNCTION(BlueprintCallable)
-    void RestoreHealth(float Healing);
+    FOnDeathSignature OnDeath;
+    FOnCurrentHealthChangedSignature OnCurrentHealthChanged;
 
-    UFUNCTION(BlueprintCallable)
-    void TakeDamage(
-        AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    bool IsDead() const { return FMath::IsNearlyZero(CurrentHealth, 0.0f); }
 
-    UFUNCTION(BlueprintCallable)
-    void ChangeDefaultMaxHealth(float NewDefaultHealth);
-
-    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Health")
-    float MaxHealth;
-
-    UPROPERTY(BlueprintReadOnly, EditDefaultsOnly, Category = "Health")
-    float CurrentHealth;
-
-    UPROPERTY(BlueprintAssignable, EditDefaultsOnly, Category = "Health")
-    FHealthUpdate OnHealthUpdate;
-
-    UPROPERTY(BlueprintAssignable, EditDefaultsOnly, Category = "Health")
-    FActorDeath OnActorDeath;
+    float GetCurrentHealth() const { return CurrentHealth; }
 
 protected:
     virtual void BeginPlay() override;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
+    float MaxHealth = 100.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
+    bool AutoHeal = true;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
+    float HealUpdateTime = 0.15f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
+    float StartHealDelay = 0.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal"))
+    float HealModifier = 0.25f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal", ClampMin = "0.0"))
+    float AutoHealStartLimit = 100.0f;
+
+private:
+    float CurrentHealth = 0.0f;
+
+    FTimerHandle HealTimerHandle;
+
+    UFUNCTION(BlueprintCallable)
+    void OnTakeAnyDamage(
+        AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
+
+    void HealUpdate();
+    void SetHealth(float NewHealth);
 };

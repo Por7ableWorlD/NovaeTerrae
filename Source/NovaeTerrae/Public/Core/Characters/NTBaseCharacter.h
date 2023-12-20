@@ -9,6 +9,8 @@
 
 class UCameraComponent;
 class USpringArmComponent;
+class UNTHealthComponent;
+class UTextRenderComponent;
 
 UCLASS()
 class NOVAETERRAE_API ANTBaseCharacter : public ACharacter
@@ -32,6 +34,21 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UCameraComponent* CameraComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UNTHealthComponent* HealthComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTextRenderComponent* HealthTextComponent;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animations")
+    UAnimMontage* DeathAnimMontage;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Damage")
+    float LifeSpanOnDeath = 5.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Damage", meta = (ClampMin = "1000.0", ClampMax = "3500.0"))
+    float LandedDeathVelocity = 1500.0f;
 
 #pragma region Enhanced Inputs
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
@@ -67,4 +84,10 @@ private:
 
     void OnStartRunnig();
     void OnStopRunnig();
+
+    void OnCurrentHealthChanged(float CurrentHealth);
+    void OnDeath();
+
+    UFUNCTION()
+    void OnGroundLanded(const FHitResult& Hit);
 };

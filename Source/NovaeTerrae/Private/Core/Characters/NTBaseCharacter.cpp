@@ -6,13 +6,16 @@
 #include "EnhancedInputSubsystems.h"
 #include "EnhancedInputComponent.h"
 #include "Components/NTCharacterMovementComponent.h"
+#include "Components/NTHealthComponent.h"
+#include "Components/TextRenderComponent.h"
+#include "GameFramework/Controller.h"
+#include "Engine/DamageEvents.h"
 
-// Sets default values
+DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All)
+
 ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     : Super(ObjInit.SetDefaultSubobjectClass<UNTCharacterMovementComponent>(ACharacter::CharacterMovementComponentName))
 {
-    // Set this character to call Tick() every frame.
-    // You can turn this off to improve performance if you don't need it.
     PrimaryActorTick.bCanEverTick = true;
 
     // Don't rotate when the controller rotates. Let that just affect the camera.
@@ -21,7 +24,7 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     bUseControllerRotationRoll = false;
 
     // Configure character movement
-    GetCharacterMovement()->bOrientRotationToMovement = true; // Character moves in the direction of input...
+    GetCharacterMovement()->bOrientRotationToMovement = true;            // Character moves in the direction of input...
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
@@ -31,11 +34,26 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     CameraComponent = CreateDefaultSubobject<UCameraComponent>("CameraComponent");
     CameraComponent->SetupAttachment(SpringArmComponent);
     CameraComponent->bUsePawnControlRotation = false;
+
+    HealthComponent = CreateDefaultSubobject<UNTHealthComponent>("HealthComponent");
+
+    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+    HealthTextComponent->SetupAttachment(GetRootComponent());
 }
 
 void ANTBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
+
+    check(HealthComponent);
+    check(HealthTextComponent);
+    check(GetCharacterMovement());
+
+    OnCurrentHealthChanged(HealthComponent->GetCurrentHealth());
+    HealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentHealthChanged);
+    HealthComponent->OnDeath.AddUObject(this, &ANTBaseCharacter::OnDeath);
+
+    LandedDelegate.AddDynamic(this, &ANTBaseCharacter::OnGroundLanded);
 }
 
 void ANTBaseCharacter::Tick(float DeltaTime)
@@ -50,13 +68,17 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
 
     if (!PlayerController)
+    {
         return;
+    }
 
     UEnhancedInputLocalPlayerSubsystem* Subsystem =
         ULocalPlayer::GetSubsystem<UEnhancedInputLocalPlayerSubsystem>(PlayerController->GetLocalPlayer());
 
     if (!Subsystem)
+    {
         return;
+    }
 
     Subsystem->AddMappingContext(InputMappingContext, 0);
 
@@ -81,7 +103,9 @@ void ANTBaseCharacter::Movement(const FInputActionValue& InputValue)
     FVector2D InputVector = InputValue.Get<FVector2D>();
 
     if (!Controller)
+    {
         return;
+    }
 
     bIsMovingForward = InputVector.Y > 0.0f;
 
@@ -109,28 +133,27 @@ void ANTBaseCharacter::Look(const FInputActionValue& InputValue)
     FVector2D InputVector = InputValue.Get<FVector2D>();
 
     if (!Controller)
+    {
         return;
+    }
 
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
 
     if (!PlayerController)
+    {
         return;
+    }
 
-#pragma region Rotation with camera
-         double inRoll = PlayerController->GetControlRotation().Roll;
-         double inPitch = PlayerController->GetControlRotation().Pitch;
-         double inYaw = PlayerController->GetControlRotation().Yaw;
+    double inRoll = PlayerController->GetControlRotation().Roll;
+    double inPitch = PlayerController->GetControlRotation().Pitch;
+    double inYaw = PlayerController->GetControlRotation().Yaw;
 
-         inPitch = FMath::ClampAngle(inPitch + InputVector.Y * -1.0f, MinCameraAngle, MaxCameraAngle);
+    inPitch = FMath::ClampAngle(inPitch + InputVector.Y * -1.0f, MinCameraAngle, MaxCameraAngle);
 
-         PlayerController->SetControlRotation(FRotator(inPitch, inYaw + InputVector.X, inRoll));
-#pragma endregion
+    PlayerController->SetControlRotation(FRotator(inPitch, inYaw + InputVector.X, inRoll));
 
-    //double inPitch = PlayerController->GetControlRotation().Pitch;
-    //inPitch = FMath::ClampAngle(inPitch + InputVector.Y * -1.0f, MinCameraAngle, MaxCameraAngle);
-
-    //AddControllerYawInput(InputVector.X);
-    //AddControllerPitchInput(InputVector.Y);
+    // AddControllerYawInput(InputVector.X);
+    // AddControllerPitchInput(InputVector.Y);
 }
 
 void ANTBaseCharacter::OnStartRunnig()
@@ -146,4 +169,35 @@ void ANTBaseCharacter::OnStopRunnig()
 bool ANTBaseCharacter::IsRunning() const
 {
     return bWantsToRun && bIsMovingForward && !GetVelocity().IsZero();
+}
+
+void ANTBaseCharacter::OnCurrentHealthChanged(float CurrentHealth)
+{
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
+}
+
+void ANTBaseCharacter::OnDeath()
+{
+    DeathAnimMontage->bEnableAutoBlendOut = false;
+    PlayAnimMontage(DeathAnimMontage);
+
+    GetCharacterMovement()->DisableMovement();
+
+    SetLifeSpan(LifeSpanOnDeath);
+
+    UE_LOG(LogBaseCharacter, Display, TEXT("OnDeath event. Play montage Death"));
+}
+
+void ANTBaseCharacter::OnGroundLanded(const FHitResult& Hit)
+{
+    const auto FallVelocityZ = -GetVelocity().Z;
+
+    UE_LOG(LogBaseCharacter, Display, TEXT("Fall Velocity Z = %.0f"), FallVelocityZ);
+
+    if (FallVelocityZ < LandedDeathVelocity)
+    {
+        return;
+    }
+
+    TakeDamage(HealthComponent->GetCurrentHealth(), FDamageEvent{}, nullptr, nullptr);
 }
