@@ -10,7 +10,9 @@
 class UCameraComponent;
 class USpringArmComponent;
 class UNTHealthComponent;
+class UNTThirstComponent;
 class UTextRenderComponent;
+class ANTCompanionPawn;
 
 UCLASS()
 class NOVAETERRAE_API ANTBaseCharacter : public ACharacter
@@ -26,8 +28,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Companion")
+    void BitCompanion();
+
 protected:
     virtual void BeginPlay() override;
+
+    ANTCompanionPawn* Companion;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USpringArmComponent* SpringArmComponent;
@@ -39,7 +46,13 @@ protected:
     UNTHealthComponent* HealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UNTThirstComponent* ThirstComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UTextRenderComponent* HealthTextComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UTextRenderComponent* ThirstTextComponent;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animations")
     UAnimMontage* DeathAnimMontage;
@@ -87,6 +100,8 @@ private:
 
     void OnCurrentHealthChanged(float CurrentHealth);
     void OnDeath();
+
+    void OnCurrentThirstChanged(float CurrentThirst);
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);

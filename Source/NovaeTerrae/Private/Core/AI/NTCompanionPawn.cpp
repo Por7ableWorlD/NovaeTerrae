@@ -1,33 +1,48 @@
 // NOVAE TERRAE. All Rights Reserved.
 
-
 #include "Core/AI/NTCompanionPawn.h"
 #include <C3_LAA_MainComponent.h>
-#include <Kismet/GameplayStatics.h>
 #include <Components/SphereComponent.h>
+#include <Kismet/GameplayStatics.h>
+#include "Components/StaticMeshComponent.h"
 #include "GameFramework/Character.h"
+#include "Engine/World.h"
+#include "Core/Components/NTCompanionHealthComponent.h"
+#include "Components/TextRenderComponent.h"
 
 ANTCompanionPawn::ANTCompanionPawn()
 {
-	PrimaryActorTick.bCanEverTick = true;
+    PrimaryActorTick.bCanEverTick = true;
 
-    SphereCollisionComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Collision Component"));
-    SphereCollisionComponent.Get()->SetSphereRadius(50.f);
-    SphereCollisionComponent.Get()->BodyInstance.SetCollisionEnabled(ECollisionEnabled::QueryOnly, true);
+    SphereCollisionComponent = CreateDefaultSubobject<USphereComponent>("SphereCollisionComponent");
+    SetRootComponent(SphereCollisionComponent);
 
-    LAAComponent = CreateDefaultSubobject<UC3_LAA_MainComponent>(TEXT("LAA Component"));
+    StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
+    StaticMeshComponent->SetupAttachment(SphereCollisionComponent);
 
+    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
+    HealthTextComponent->SetupAttachment(GetRootComponent());
+
+    LAAComponent = CreateDefaultSubobject<UC3_LAA_MainComponent>("LAAComponent");
+
+    CompanionHealthComponent = CreateDefaultSubobject<UNTCompanionHealthComponent>("CompanionHealthComponent");
 }
 
 void ANTCompanionPawn::BeginPlay()
 {
-	Super::BeginPlay();
+    Super::BeginPlay();
 
-    if (!IsValid(LAAComponent.Get()))
-    {
-        return;
-    }
-	
-    LAAComponent.Get()->SetViewTargetActor(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    check(LAAComponent);
+    check(CompanionHealthComponent);
+    check(HealthTextComponent);
+
+    OnCurrentHealthChanged(CompanionHealthComponent->GetCurrentHealth());
+    CompanionHealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTCompanionPawn::OnCurrentHealthChanged);
+
+    LAAComponent->SetViewTargetActor(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 }
 
+void ANTCompanionPawn::OnCurrentHealthChanged(float CurrentHealth)
+{
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
+}

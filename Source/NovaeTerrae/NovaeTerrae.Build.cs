@@ -13,7 +13,7 @@ public class NovaeTerrae : ModuleRules
 		PrivateDependencyModuleNames.AddRange(new string[] {  });
 
         PublicIncludePaths.AddRange(new string[] { "NovaeTerrae/Public/Core", "NovaeTerrae/Public/Core/Characters",
-            "NovaeTerrae/Public/Core/Components", "NovaeTerrae/Public/Core/AI", "ShootThemUp/Public/Dev/Damage"});
+            "NovaeTerrae/Public/Core/Components", "NovaeTerrae/Public/Core/AI", "NovaeTerrae/Public/Core/Dev/Damage"});
 
         // Uncomment if you are using Slate UI
         // PrivateDependencyModuleNames.AddRange(new string[] { "Slate", "SlateCore" });
