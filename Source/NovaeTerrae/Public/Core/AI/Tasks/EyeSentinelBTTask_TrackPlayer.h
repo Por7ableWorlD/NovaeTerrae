@@ -15,7 +15,7 @@ class NOVAETERRAE_API UEyeSentinelBTTask_TrackPlayer : public UBTTask_Blackboard
 public:
     UEyeSentinelBTTask_TrackPlayer();
 
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior", meta = (ClampMin = "0.1", ClampMax = "10.0"))
+    UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Behavior", meta = (ClampMin = "0.1", ClampMax = "10.0"))
     float TrackingTime = 2.0f;
 
 private:
