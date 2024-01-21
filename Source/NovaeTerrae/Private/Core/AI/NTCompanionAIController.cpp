@@ -18,10 +18,7 @@ void ANTCompanionAIController::BeginPlay()
 {
     Super::BeginPlay();
 
-    if (!IsValid(BehaviorTree.Get()))
-    {
-        return;
-    }
+    check(BehaviorTree);
 
     Player = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 
@@ -70,10 +67,8 @@ void ANTCompanionAIController::OnPossess(APawn* InPawn)
 {
     Super::OnPossess(InPawn);
 
-    if (!IsValid(Blackboard.Get()) || !IsValid(BehaviorTree.Get()))
-    {
-        return;
-    }
+    check(Blackboard);
+    check(BehaviorTree);
 
     Blackboard->InitializeBlackboard(*BehaviorTree.Get()->BlackboardAsset);
 }

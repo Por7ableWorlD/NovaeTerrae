@@ -24,6 +24,7 @@ public:
     bool IsDead() const { return FMath::IsNearlyZero(CurrentHealth, 0.0f); }
 
     float GetCurrentHealth() const { return CurrentHealth; }
+    float GetMaxHealth() const { return MaxHealth; }
 
 protected:
     virtual void BeginPlay() override;
