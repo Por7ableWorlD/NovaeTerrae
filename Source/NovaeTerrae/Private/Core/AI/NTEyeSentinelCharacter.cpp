@@ -44,7 +44,7 @@ void ANTEyeSentinelCharacter::BeginPlay()
 
     GetCharacterMovement()->GravityScale = 0.0f;
 
-    ThresholdValue = HealthComponent->GetMaxHealth() * (1 - StrafeThresholdPercentage * ThresholdNumber);
+    ThresholdValue = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * ThresholdNumber) / 100);
 }
 
 void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
@@ -63,7 +63,7 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
     AIController->GetBlackboardComponent()->SetValueAsBool(FName("IsStrafeAvailable"), true);
 
 
-    float NewThreshold = HealthComponent->GetMaxHealth() * (1 - StrafeThresholdPercentage * (ThresholdNumber + 1));
+    float NewThreshold = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * (ThresholdNumber + 1)) / 100);
 
     if (NewThreshold <= 0)
     {
@@ -82,5 +82,5 @@ void ANTEyeSentinelCharacter::OnDeath()
         ResurectionTimerHandle, [&]() { HealthComponent->SetHealth(HealthComponent->GetMaxHealth());
         }, ResurectionTime, false);*/
     ThresholdNumber = 1;
-    ThresholdValue = HealthComponent->GetMaxHealth() * (1 - StrafeThresholdPercentage * ThresholdNumber);
+    ThresholdValue = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * ThresholdNumber) / 100);
 }
