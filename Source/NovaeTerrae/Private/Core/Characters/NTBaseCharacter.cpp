@@ -7,9 +7,12 @@
 #include "EnhancedInputComponent.h"
 #include "Components/NTCharacterMovementComponent.h"
 #include "Components/NTHealthComponent.h"
+#include "Components/NTThirstComponent.h"
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
 #include "Engine/DamageEvents.h"
+#include "Core/AI/NTCompanionPawn.h"
+#include "Kismet/GameplayStatics.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All)
 
@@ -27,6 +30,9 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     GetCharacterMovement()->bOrientRotationToMovement = true;            // Character moves in the direction of input...
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
+    GetCharacterMovement()->bUseSeparateBrakingFriction = false;
+    GetCharacterMovement()->FallingLateralFriction = 5.0f;
+
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
     SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
@@ -37,8 +43,13 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
 
     HealthComponent = CreateDefaultSubobject<UNTHealthComponent>("HealthComponent");
 
+    ThirstComponent = CreateDefaultSubobject<UNTThirstComponent>("ThirstComponent");
+
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
+
+    ThirstTextComponent = CreateDefaultSubobject<UTextRenderComponent>("ThirstTextComponent");
+    ThirstTextComponent->SetupAttachment(GetRootComponent());
 }
 
 void ANTBaseCharacter::BeginPlay()
@@ -47,13 +58,19 @@ void ANTBaseCharacter::BeginPlay()
 
     check(HealthComponent);
     check(HealthTextComponent);
+    check(ThirstTextComponent);
     check(GetCharacterMovement());
 
     OnCurrentHealthChanged(HealthComponent->GetCurrentHealth());
     HealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentHealthChanged);
     HealthComponent->OnDeath.AddUObject(this, &ANTBaseCharacter::OnDeath);
 
+    OnCurrentThirstChanged(ThirstComponent->GetCurrentThirst());
+    ThirstComponent->OnCurrentThirstChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentThirstChanged);
+
     LandedDelegate.AddDynamic(this, &ANTBaseCharacter::OnGroundLanded);
+
+    Companion = Cast<ANTCompanionPawn>(UGameplayStatics::GetActorOfClass(GetWorld(), ANTCompanionPawn::StaticClass()));
 }
 
 void ANTBaseCharacter::Tick(float DeltaTime)
@@ -92,6 +109,8 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         PlayerInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &ANTBaseCharacter::Look);
 
         PlayerInput->BindAction(JumpAction, ETriggerEvent::Started, this, &ANTBaseCharacter::Jump);
+
+        PlayerInput->BindAction(DashAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnDash);
 
         PlayerInput->BindAction(RunAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnStartRunnig);
         PlayerInput->BindAction(RunAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopRunnig);
@@ -166,6 +185,25 @@ void ANTBaseCharacter::OnStopRunnig()
     bWantsToRun = false;
 }
 
+void ANTBaseCharacter::OnDash() 
+{
+    if ((IsRunning() && !GetCharacterMovement()->IsFalling()) || (!CanDash))
+    {
+        return;
+    }
+
+    GetWorld()->GetTimerManager().SetTimer(DashReseter, this, &ANTBaseCharacter::OnResetDash, ResetDashDelay, false);
+
+    LaunchCharacter(FVector{GetVelocity().X * 10.0f, GetVelocity().Y * 10.0f, 0}, false, false);
+    CanDash = false;
+}
+
+void ANTBaseCharacter::OnResetDash() 
+{
+    CanDash = true;
+    GetWorld()->GetTimerManager().ClearTimer(DashReseter);
+}
+
 bool ANTBaseCharacter::IsRunning() const
 {
     return bWantsToRun && bIsMovingForward && !GetVelocity().IsZero();
@@ -174,6 +212,11 @@ bool ANTBaseCharacter::IsRunning() const
 void ANTBaseCharacter::OnCurrentHealthChanged(float CurrentHealth)
 {
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
+}
+
+void ANTBaseCharacter::OnCurrentThirstChanged(float CurrentThirst)
+{
+    ThirstTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentThirst)));
 }
 
 void ANTBaseCharacter::OnDeath()
@@ -200,4 +243,9 @@ void ANTBaseCharacter::OnGroundLanded(const FHitResult& Hit)
     }
 
     TakeDamage(HealthComponent->GetCurrentHealth(), FDamageEvent{}, nullptr, nullptr);
+}
+
+void ANTBaseCharacter::BitCompanion()
+{
+    UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, this, nullptr);
 }
