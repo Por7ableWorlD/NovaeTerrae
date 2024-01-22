@@ -16,6 +16,8 @@ DEFINE_LOG_CATEGORY_STATIC(LogEyeSentinelBTTaskTrackPlayer, All, All)
 
 UEyeSentinelBTTask_TrackPlayer::UEyeSentinelBTTask_TrackPlayer()
 {
+    bCreateNodeInstance = true;
+
     NodeName = TEXT("Eye Sentinel Track Player");
 
     BlackboardKey.AddVectorFilter(this, GET_MEMBER_NAME_CHECKED(UEyeSentinelBTTask_TrackPlayer, BlackboardKey));
@@ -56,7 +58,7 @@ void UEyeSentinelBTTask_TrackPlayer::UpdateMarkLocation()
     FHitResult HitResult;
 
     FVector TraceStart = Pawn->GetActorLocation();
-    FVector TraceEnd = TraceStart + Pawn->GetActorForwardVector() * 1500.0f;
+    FVector TraceEnd = TraceStart + Pawn->GetActorForwardVector() * 3000.0f;
 
     FCollisionQueryParams QueryParams;
     QueryParams.AddIgnoredActors(ActorsToIgnore);
