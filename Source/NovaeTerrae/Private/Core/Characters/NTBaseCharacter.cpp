@@ -30,6 +30,9 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     GetCharacterMovement()->bOrientRotationToMovement = true;            // Character moves in the direction of input...
     GetCharacterMovement()->RotationRate = FRotator(0.0f, 500.0f, 0.0f); // ...at this rotation rate
 
+    GetCharacterMovement()->bUseSeparateBrakingFriction = false;
+    GetCharacterMovement()->FallingLateralFriction = 5.0f;
+
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
     SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
@@ -107,6 +110,8 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
         PlayerInput->BindAction(JumpAction, ETriggerEvent::Started, this, &ANTBaseCharacter::Jump);
 
+        PlayerInput->BindAction(DashAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnDash);
+
         PlayerInput->BindAction(RunAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnStartRunnig);
         PlayerInput->BindAction(RunAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopRunnig);
     }
@@ -178,6 +183,25 @@ void ANTBaseCharacter::OnStartRunnig()
 void ANTBaseCharacter::OnStopRunnig()
 {
     bWantsToRun = false;
+}
+
+void ANTBaseCharacter::OnDash() 
+{
+    if ((IsRunning() && !GetCharacterMovement()->IsFalling()) || (!CanDash))
+    {
+        return;
+    }
+
+    GetWorld()->GetTimerManager().SetTimer(DashReseter, this, &ANTBaseCharacter::OnResetDash, ResetDashDelay, false);
+
+    LaunchCharacter(FVector{GetVelocity().X * 10.0f, GetVelocity().Y * 10.0f, 0}, false, false);
+    CanDash = false;
+}
+
+void ANTBaseCharacter::OnResetDash() 
+{
+    CanDash = true;
+    GetWorld()->GetTimerManager().ClearTimer(DashReseter);
 }
 
 bool ANTBaseCharacter::IsRunning() const

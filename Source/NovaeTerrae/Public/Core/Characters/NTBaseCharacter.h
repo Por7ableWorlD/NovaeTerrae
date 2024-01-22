@@ -78,11 +78,20 @@ protected:
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* RunAction;
+    
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* DashAction;
 #pragma endregion
 
 private:
     bool bWantsToRun = false;
     bool bIsMovingForward = false;
+
+#pragma region Dash
+    FTimerHandle DashReseter;
+    float ResetDashDelay = 1.5f;
+    bool CanDash = true;
+#pragma endregion
 
     UPROPERTY(EditDefaultsOnly, Category = "CameraAngle", meta = (ClampMin = "-60", ClampMax = "-30"))
     double MinCameraAngle;
@@ -97,6 +106,9 @@ private:
 
     void OnStartRunnig();
     void OnStopRunnig();
+
+    void OnDash();
+    void OnResetDash();
 
     void OnCurrentHealthChanged(float CurrentHealth);
     void OnDeath();
