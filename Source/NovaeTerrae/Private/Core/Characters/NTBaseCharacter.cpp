@@ -33,6 +33,8 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     GetCharacterMovement()->bUseSeparateBrakingFriction = false;
     GetCharacterMovement()->FallingLateralFriction = 5.0f;
 
+    JumpMaxCount = 2;
+
     SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArmComponent");
     SpringArmComponent->SetupAttachment(GetRootComponent());
     SpringArmComponent->bUsePawnControlRotation = true;
@@ -41,7 +43,7 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     CameraComponent->SetupAttachment(SpringArmComponent);
     CameraComponent->bUsePawnControlRotation = false;
 
-    HealthComponent = CreateDefaultSubobject<UNTHealthComponent>("HealthComponent");
+    HealthComponentPrivet = CreateDefaultSubobject<UNTHealthComponent>("HealthComponent");
 
     ThirstComponent = CreateDefaultSubobject<UNTThirstComponent>("ThirstComponent");
 
@@ -56,14 +58,14 @@ void ANTBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    check(HealthComponent);
+    check(HealthComponentPrivet);
     check(HealthTextComponent);
     check(ThirstTextComponent);
     check(GetCharacterMovement());
 
-    OnCurrentHealthChanged(HealthComponent->GetCurrentHealth());
-    HealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentHealthChanged);
-    HealthComponent->OnDeath.AddUObject(this, &ANTBaseCharacter::OnDeath);
+    OnCurrentHealthChanged(HealthComponentPrivet->GetCurrentHealth());
+    HealthComponentPrivet->OnCurrentHealthChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentHealthChanged);
+    HealthComponentPrivet->OnDeath.AddUObject(this, &ANTBaseCharacter::OnDeath);
 
     OnCurrentThirstChanged(ThirstComponent->GetCurrentThirst());
     ThirstComponent->OnCurrentThirstChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentThirstChanged);
@@ -202,6 +204,16 @@ void ANTBaseCharacter::OnResetDash()
 {
     CanDash = true;
     GetWorld()->GetTimerManager().ClearTimer(DashReseter);
+
+   // UE_LOG(LogBaseCharacter, Error, TEXT("Heal: %f"), HealthComponent->GetMaxHealth());
+}
+
+void ANTBaseCharacter::OnResetDeath()
+{
+    APlayerController* PlayerController = Cast<APlayerController>(Controller);
+    EnableInput(PlayerController);
+    OnResetDeathSignature.Broadcast();
+    HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetMaxHealth());
 }
 
 bool ANTBaseCharacter::IsRunning() const
@@ -219,14 +231,22 @@ void ANTBaseCharacter::OnCurrentThirstChanged(float CurrentThirst)
     ThirstTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentThirst)));
 }
 
-void ANTBaseCharacter::OnDeath()
+void ANTBaseCharacter::OnDeath(bool IsLazer)
 {
-    DeathAnimMontage->bEnableAutoBlendOut = false;
+    DeathAnimMontage->bEnableAutoBlendOut = true;
     PlayAnimMontage(DeathAnimMontage);
 
-    GetCharacterMovement()->DisableMovement();
+    //GetCharacterMovement()->DisableMovement();
+    APlayerController* PlayerController = Cast<APlayerController>(Controller);
+    DisableInput(PlayerController);
 
-    SetLifeSpan(LifeSpanOnDeath);
+    GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &ANTBaseCharacter::OnResetDeath, 5, false);
+
+    ThirstComponent->SetThirst(FMath::Clamp(ThirstComponent->GetCurrentThirst() + 1, 0, ThirstComponent->MaxThirst));
+
+    //SetLifeSpan(LifeSpanOnDeath);
+
+    OnDeathSignature.Broadcast(IsLazer);
 
     UE_LOG(LogBaseCharacter, Display, TEXT("OnDeath event. Play montage Death"));
 }
@@ -242,10 +262,11 @@ void ANTBaseCharacter::OnGroundLanded(const FHitResult& Hit)
         return;
     }
 
-    TakeDamage(HealthComponent->GetCurrentHealth(), FDamageEvent{}, nullptr, nullptr);
+    TakeDamage(HealthComponentPrivet->GetCurrentHealth(), FDamageEvent{}, nullptr, nullptr);
 }
 
 void ANTBaseCharacter::BitCompanion()
 {
+    ThirstComponent->SetThirst(0);
     UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, this, nullptr);
 }
