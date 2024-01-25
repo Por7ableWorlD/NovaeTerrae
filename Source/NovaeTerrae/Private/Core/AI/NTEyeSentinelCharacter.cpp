@@ -78,9 +78,9 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
 
 void ANTEyeSentinelCharacter::OnDeath()
 {
-    /* GetWorld()->GetTimerManager().SetTimer(
+    GetWorld()->GetTimerManager().SetTimer(
         ResurectionTimerHandle, [&]() { HealthComponent->SetHealth(HealthComponent->GetMaxHealth());
-        }, ResurectionTime, false);*/
+        }, ResurectionTime, false);
     ThresholdNumber = 1;
     ThresholdValue = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * ThresholdNumber) / 100);
 }
