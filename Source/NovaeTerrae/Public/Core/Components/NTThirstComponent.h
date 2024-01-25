@@ -20,13 +20,15 @@ public:
 
     float GetCurrentThirst() const { return CurrentThirst; }
 
+    void SetThirst(float NewThirst);
+
+    
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Thirst", meta = (ClampMin = "1.0", ClampMax = "10.0"))
+    float MaxThirst = 5.0f;
+
 protected:
     virtual void BeginPlay() override;
 
-    void SetThirst(float NewThirst);
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Thirst", meta = (ClampMin = "1.0", ClampMax = "10.0"))
-    float MaxThirst = 5.0f;
 
 private:
     float CurrentThirst = 2.0f;
