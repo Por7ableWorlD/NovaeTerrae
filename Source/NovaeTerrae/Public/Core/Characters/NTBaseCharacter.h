@@ -14,6 +14,9 @@ class UNTThirstComponent;
 class UTextRenderComponent;
 class ANTCompanionPawn;
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnResetDeathSignature);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDDeathSignature, bool, IsLazer);
+
 UCLASS()
 class NOVAETERRAE_API ANTBaseCharacter : public ACharacter
 {
@@ -31,6 +34,12 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Companion")
     void BitCompanion();
 
+    UPROPERTY(BlueprintAssignable);
+    FOnResetDeathSignature OnResetDeathSignature;
+
+    UPROPERTY(BlueprintAssignable);
+    FOnDDeathSignature OnDeathSignature;
+
 protected:
     virtual void BeginPlay() override;
 
@@ -43,7 +52,7 @@ protected:
     UCameraComponent* CameraComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UNTHealthComponent* HealthComponent;
+    UNTHealthComponent* HealthComponentPrivet;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTThirstComponent* ThirstComponent;
@@ -93,6 +102,8 @@ private:
     bool CanDash = true;
 #pragma endregion
 
+    FTimerHandle DeathTimer;
+
     UPROPERTY(EditDefaultsOnly, Category = "CameraAngle", meta = (ClampMin = "-60", ClampMax = "-30"))
     double MinCameraAngle;
 
@@ -110,8 +121,10 @@ private:
     void OnDash();
     void OnResetDash();
 
+    void OnResetDeath();
+
     void OnCurrentHealthChanged(float CurrentHealth);
-    void OnDeath();
+    void OnDeath(bool IsLazer);
 
     void OnCurrentThirstChanged(float CurrentThirst);
 

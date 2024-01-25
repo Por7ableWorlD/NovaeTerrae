@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "NTHealthComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE(FOnDeathSignature);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentHealthChangedSignature, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -23,13 +23,16 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Health")
     bool IsDead() const { return FMath::IsNearlyZero(CurrentHealth, 0.0f); }
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
     float GetCurrentHealth() const { return CurrentHealth; }
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
     float GetMaxHealth() const { return MaxHealth; }
+
+    void SetHealth(float NewHealth);
 
 protected:
     virtual void BeginPlay() override;
-
-    void SetHealth(float NewHealth);
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Health", meta = (ClampMin = "0.0", ClampMax = "1000.0"))
     float MaxHealth = 100.0f;

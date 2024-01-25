@@ -2,6 +2,7 @@
 
 #include "Core/Components/NTHealthComponent.h"
 #include "Engine/World.h"
+#include "Dev/Damage/LazerDamageType.h"
 #include "Dev/Damage/NTDevBaseDamageType.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogHealthComponent, All, All)
@@ -40,7 +41,14 @@ void UNTHealthComponent::OnTakeAnyDamage(
 
     if (IsDead())
     {
-        OnDeath.Broadcast();
+        if (DamageType->IsA<ULazerDamageType>())
+        {
+            OnDeath.Broadcast(true);
+        }
+        else
+        {
+            OnDeath.Broadcast(false);
+        }
         UE_LOG(LogHealthComponent, Display, TEXT("Death\nLast damage: %.0f"), Damage);
     }
 
