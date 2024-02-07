@@ -70,8 +70,8 @@ void UEyeSentinelBTTask_TrackPlayer::UpdateMarkLocation()
     AIController->GetBlackboardComponent()->SetValueAsVector(BlackboardKey.SelectedKeyName, HitResult.Location);
 
     CurrentTime += TrackTick;
-    UE_LOG(LogEyeSentinelBTTaskTrackPlayer, Display, TEXT("[DEBUG] Current Time: %f"), CurrentTime);
-    UE_LOG(LogEyeSentinelBTTaskTrackPlayer, Display, TEXT("[DEBUG] Tracking Time: %f"), TrackingTime);
+    // UE_LOG(LogEyeSentinelBTTaskTrackPlayer, Display, TEXT("[DEBUG] Current Time: %f"), CurrentTime);
+    // UE_LOG(LogEyeSentinelBTTaskTrackPlayer, Display, TEXT("[DEBUG] Tracking Time: %f"), TrackingTime);
 
     if (TrackingTime <= CurrentTime)
     {

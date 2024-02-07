@@ -32,11 +32,23 @@ EBTNodeResult::Type UEyeSentinelBTTask_Strafe::ExecuteTask(UBehaviorTreeComponen
 
     const UNavigationSystemV1* NavSystem{UNavigationSystemV1::GetCurrent(GetWorld())};
 
-    check(NavSystem);
+    if (!ensureMsgf(NavSystem, TEXT("[Warning] Navigation system not found or isn't available")))
+    {
+        return EBTNodeResult::Failed;
+    }
 
+    if (!ensureMsgf(NavSystem->GetDefaultNavDataInstance(), TEXT("[Warning] Navigation mesh not found on the current level")))
+    {
+        return EBTNodeResult::Failed;
+    }
+    
     UNavigationPath* path = NavSystem->FindPathToLocationSynchronously(this, ActorLocation, NewLocation, Pawn);
-
-    check(path);
+    
+    if (!path)
+    {
+        UE_LOG(LogEyeSentinelBTTaskStrafe, Display, TEXT("[Debug] Strafe task couldn't find path for strafe to new location"));
+        return EBTNodeResult::Failed;
+    }
 
     AIController->GetBlackboardComponent()->SetValueAsBool(BlackboardKey.SelectedKeyName, false);
 
