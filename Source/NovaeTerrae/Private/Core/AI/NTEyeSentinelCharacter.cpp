@@ -37,6 +37,8 @@ void ANTEyeSentinelCharacter::BeginPlay()
 
     HealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTEyeSentinelCharacter::OnCurrentHealthChanged);
 
+    HealthComponent->OnDeath.AddUObject(this, &ANTEyeSentinelCharacter::OnDeath);
+
     LAAComponent->SetViewTargetActor(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     LAAComponent->SetEnable(false);
     LAAComponent->SetDestinationOffset({0.0f, 0.0f, -50.0f});
@@ -76,11 +78,13 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
     UE_LOG(LogEyeSentinel, Display, TEXT("[DEBUG] New Threshold: %.0f"), NewThreshold);
 }
 
-void ANTEyeSentinelCharacter::OnDeath()
+void ANTEyeSentinelCharacter::OnDeath(bool GetAbility)
 {
+    UE_LOG(LogEyeSentinel, Display, TEXT("[DEBUG] Resurrecting"));
     GetWorld()->GetTimerManager().SetTimer(
-        ResurectionTimerHandle, [&]() { HealthComponent->SetHealth(HealthComponent->GetMaxHealth());
+        ResurectionTimerHandle, [&]() {
+            ThresholdNumber = 1;
+            ThresholdValue = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * ThresholdNumber) / 100);
+            HealthComponent->SetHealth(HealthComponent->GetMaxHealth());
         }, ResurectionTime, false);
-    ThresholdNumber = 1;
-    ThresholdValue = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * ThresholdNumber) / 100);
 }
