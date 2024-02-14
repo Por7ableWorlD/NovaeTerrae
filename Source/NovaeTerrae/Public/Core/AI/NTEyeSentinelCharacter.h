@@ -38,7 +38,7 @@ protected:
 
     void OnCurrentHealthChanged(float CurrentHealth);
 
-    void OnDeath();
+    void OnDeath(bool GetAbility = false);
 
 private:
     FTimerHandle ResurectionTimerHandle;
