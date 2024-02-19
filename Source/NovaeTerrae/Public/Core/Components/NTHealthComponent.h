@@ -29,6 +29,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Health")
     float GetMaxHealth() const { return MaxHealth; }
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetDefaultMaxHealth(float NewMaxHealth);
+
     void SetHealth(float NewHealth);
 
 protected:
@@ -39,6 +42,7 @@ protected:
 
 private:
     float CurrentHealth = 0.0f;
+    bool SetDefaultMaxHealthUsed = false;
 
     UFUNCTION(BlueprintCallable)
     virtual void OnTakeAnyDamage(

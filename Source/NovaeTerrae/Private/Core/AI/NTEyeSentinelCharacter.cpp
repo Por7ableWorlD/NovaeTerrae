@@ -10,6 +10,7 @@
 #include <C3_LAA_MainComponent.h>
 #include "BehaviorTree/BlackboardComponent.h"
 #include <Kismet/GameplayStatics.h>
+#include "Components/SplineComponent.h"
 #include <AIController.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogEyeSentinel, All, All)
@@ -26,6 +27,8 @@ ANTEyeSentinelCharacter::ANTEyeSentinelCharacter()
     LAAComponent = CreateDefaultSubobject<UC3_LAA_MainComponent>("LAAComponent");
 
     HealthComponent = CreateDefaultSubobject<UNTHealthComponent>("HealthComponent");
+
+    SplineComponent = CreateDefaultSubobject<USplineComponent>("SplineComponent");
 }
 
 void ANTEyeSentinelCharacter::BeginPlay()
@@ -34,6 +37,7 @@ void ANTEyeSentinelCharacter::BeginPlay()
 	
     check(LAAComponent);
     check(HealthComponent);
+    check(SplineComponent);
 
     HealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTEyeSentinelCharacter::OnCurrentHealthChanged);
 
@@ -53,21 +57,26 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
 {
     UE_LOG(LogEyeSentinel, Display, TEXT("[DEBUG] Current Health: %.0f"), CurrentHealth);
     UE_LOG(LogEyeSentinel, Display, TEXT("[DEBUG] Current Threshold: %.0f"), ThresholdValue);
-    if (CurrentHealth > ThresholdValue || HealthComponent->IsDead())
+
+    AAIController* AIController = GetController<AAIController>();
+
+    check(AIController);
+
+    AIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+
+    LAAComponent->SetEnable(true);
+
+    if (CurrentHealth > ThresholdValue)
     {
         return;
     }
-    
-    AAIController* AIController = GetController<AAIController>();
-    
-    check(AIController);
 
     AIController->GetBlackboardComponent()->SetValueAsBool(FName("IsStrafeAvailable"), true);
 
 
     float NewThreshold = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * (ThresholdNumber + 1)) / 100);
 
-    if (NewThreshold <= 0)
+    if (NewThreshold < 0)
     {
         return;
     }
@@ -80,11 +89,5 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
 
 void ANTEyeSentinelCharacter::OnDeath(bool GetAbility)
 {
-    UE_LOG(LogEyeSentinel, Display, TEXT("[DEBUG] Resurrecting"));
-    GetWorld()->GetTimerManager().SetTimer(
-        ResurectionTimerHandle, [&]() {
-            ThresholdNumber = 1;
-            ThresholdValue = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * ThresholdNumber) / 100);
-            HealthComponent->SetHealth(HealthComponent->GetMaxHealth());
-        }, ResurectionTime, false);
+    Destroy();
 }

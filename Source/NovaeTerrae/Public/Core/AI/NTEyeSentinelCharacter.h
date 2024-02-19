@@ -9,6 +9,7 @@
 class UC3_LAA_MainComponent;
 class UStaticMeshComponent;
 class UNTHealthComponent;
+class USplineComponent;
 
 UCLASS()
 class NOVAETERRAE_API ANTEyeSentinelCharacter : public ACharacter
@@ -27,11 +28,14 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTHealthComponent* HealthComponent;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    USplineComponent* SplineComponent;
+
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior", meta = (ClampMin = "0.1", ClampMax = "100.0"))
     float StrafeThresholdPercentage = 25.0f;
 
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Behavior")
-    float ResurectionTime = 10.0f;
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior", meta = (ClampMin = "100.0", ClampMax = "5000.0"))
+    float AttackRadius = 3000.0f;
 
 protected:
 	virtual void BeginPlay() override;

@@ -13,6 +13,7 @@
 #include "Engine/DamageEvents.h"
 #include "Core/AI/NTCompanionPawn.h"
 #include "Kismet/GameplayStatics.h"
+#include "GameFramework/PlayerStart.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogBaseCharacter, All, All)
 
@@ -214,6 +215,16 @@ void ANTBaseCharacter::OnResetDeath()
     EnableInput(PlayerController);
     OnResetDeathSignature.Broadcast();
     HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetMaxHealth());
+
+    AActor* PlayerStart = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass());
+    if (!PlayerStart)
+    {
+        UE_LOG(LogBaseCharacter, Warning, TEXT("[Warning] Can't find player's start object!"));
+    }
+
+    Companion->TeleportTo(PlayerStart->GetActorLocation() + FVector(100.0f, 0.0f, 0.0f), PlayerStart->GetActorRotation());
+    this->TeleportTo(PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());  
+    
 }
 
 bool ANTBaseCharacter::IsRunning() const
@@ -268,5 +279,5 @@ void ANTBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 void ANTBaseCharacter::BitCompanion()
 {
     ThirstComponent->SetThirst(0);
-    UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, this, nullptr);
+    UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, Companion, nullptr);
 }

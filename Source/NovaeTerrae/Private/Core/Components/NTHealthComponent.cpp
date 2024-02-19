@@ -66,6 +66,18 @@ void UNTHealthComponent::OnTakeAnyDamage(
     }
 }
 
+void UNTHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
+{
+    if (SetDefaultMaxHealthUsed)
+    {
+        return;
+    }
+
+    MaxHealth = NewMaxHealth;
+    SetDefaultMaxHealthUsed = true;
+    SetHealth(MaxHealth);
+}
+
 void UNTHealthComponent::SetHealth(float NewHealth)
 {
     CurrentHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
