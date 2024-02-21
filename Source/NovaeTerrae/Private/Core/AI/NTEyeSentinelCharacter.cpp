@@ -43,12 +43,11 @@ void ANTEyeSentinelCharacter::BeginPlay()
 
     HealthComponent->OnDeath.AddUObject(this, &ANTEyeSentinelCharacter::OnDeath);
 
+    HealthComponent->OnPlayerDeath.AddUObject(this, &ANTEyeSentinelCharacter::OnPlayerDeath);
+
     LAAComponent->SetViewTargetActor(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     LAAComponent->SetEnable(false);
-    LAAComponent->SetDestinationOffset({0.0f, 0.0f, -50.0f});
-    LAAComponent->SetFollowSpeed(3.0f);
-
-    GetCharacterMovement()->GravityScale = 0.0f;
+    LAAComponent->SetFollowSpeed(10.0f);
 
     ThresholdValue = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * ThresholdNumber) / 100);
 }
@@ -63,6 +62,7 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
     check(AIController);
 
     AIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
+    AIController->GetBlackboardComponent()->SetValueAsBool(FName("AgressiveState"), true);
 
     LAAComponent->SetEnable(true);
 
@@ -90,4 +90,9 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
 void ANTEyeSentinelCharacter::OnDeath(bool GetAbility)
 {
     Destroy();
+}
+
+void ANTEyeSentinelCharacter::OnPlayerDeath() {
+    ThresholdNumber = 1;
+    ThresholdValue = HealthComponent->GetMaxHealth() * (1 - (StrafeThresholdPercentage * ThresholdNumber) / 100);
 }

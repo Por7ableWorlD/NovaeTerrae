@@ -44,8 +44,9 @@ protected:
 
     void OnDeath(bool GetAbility = false);
 
+    void OnPlayerDeath();
+
 private:
-    FTimerHandle ResurectionTimerHandle;
     float ThresholdValue;
     int ThresholdNumber = 1;
 };
