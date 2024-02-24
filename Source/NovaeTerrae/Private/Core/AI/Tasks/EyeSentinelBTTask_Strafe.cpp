@@ -24,11 +24,13 @@ EBTNodeResult::Type UEyeSentinelBTTask_Strafe::ExecuteTask(UBehaviorTreeComponen
 
     APawn* Pawn {AIController->GetPawn()};
 
-    FVector ActorOrigin, BoxExtent;
-    Pawn->GetActorBounds(false, ActorOrigin, BoxExtent, false);
+    // FVector ActorOrigin, BoxExtent;
+    // Pawn->GetActorBounds(true, ActorOrigin, BoxExtent, false);
+
+    // DrawDebugBox(GetWorld(), ActorOrigin, BoxExtent, FColor::Black, false, 2.0f);
 
     const FVector ActorLocation {Pawn->GetActorLocation()};
-    const FVector NewLocation = BoxExtent * RandomStrafeModifier[FMath::RandRange(0, 3)] * Pawn->GetActorRightVector() + ActorLocation;
+    const FVector NewLocation = 150 * RandomStrafeModifier[FMath::RandRange(0, 3)] * Pawn->GetActorRightVector() + ActorLocation;
 
     const UNavigationSystemV1* NavSystem{UNavigationSystemV1::GetCurrent(GetWorld())};
 

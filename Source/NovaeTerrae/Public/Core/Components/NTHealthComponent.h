@@ -8,6 +8,7 @@
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentHealthChangedSignature, float);
+DECLARE_MULTICAST_DELEGATE(FOnPlayerDeath);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class NOVAETERRAE_API UNTHealthComponent : public UActorComponent
@@ -19,6 +20,7 @@ public:
 
     FOnDeathSignature OnDeath;
     FOnCurrentHealthChangedSignature OnCurrentHealthChanged;
+    FOnPlayerDeath OnPlayerDeath;
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     bool IsDead() const { return FMath::IsNearlyZero(CurrentHealth, 0.0f); }
@@ -28,6 +30,12 @@ public:
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     float GetMaxHealth() const { return MaxHealth; }
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetDefaultMaxHealth(float NewMaxHealth);
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void RestoreFullHealth();
 
     void SetHealth(float NewHealth);
 
@@ -39,6 +47,7 @@ protected:
 
 private:
     float CurrentHealth = 0.0f;
+    bool SetDefaultMaxHealthUsed = false;
 
     UFUNCTION(BlueprintCallable)
     virtual void OnTakeAnyDamage(

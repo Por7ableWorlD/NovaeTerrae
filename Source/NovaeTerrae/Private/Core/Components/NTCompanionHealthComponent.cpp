@@ -4,6 +4,7 @@
 #include "Engine/World.h"
 #include "TimerManager.h"
 #include "Core/Characters/NTBaseCharacter.h"
+#include "Core/AI/NTCompanionPawn.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogCompanionHealthComponent, All, All)
 
@@ -17,7 +18,7 @@ void UNTCompanionHealthComponent::BeginPlay()
 void UNTCompanionHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (Damage <= 0.0f || !GetWorld() || HealTimerHandle.IsValid() || IsDead() || !DamageCauser->IsA<ANTBaseCharacter>())
+    if (Damage <= 0.0f || !GetWorld() || HealTimerHandle.IsValid() || IsDead() || !DamageCauser->IsA<ANTCompanionPawn>())
     {
         return;
     }
