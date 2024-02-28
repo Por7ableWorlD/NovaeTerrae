@@ -12,7 +12,7 @@ class USpringArmComponent;
 class UNTHealthComponent;
 class UNTThirstComponent;
 class UTextRenderComponent;
-class ANTCompanionPawn;
+class ANTCompanionCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnResetDeathSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDDeathSignature, bool, IsLazer);
@@ -43,7 +43,7 @@ public:
 protected:
     virtual void BeginPlay() override;
 
-    ANTCompanionPawn* Companion;
+    ANTCompanionCharacter* Companion;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USpringArmComponent* SpringArmComponent;

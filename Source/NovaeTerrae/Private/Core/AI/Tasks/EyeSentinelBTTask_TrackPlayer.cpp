@@ -2,7 +2,7 @@
 
 
 #include "Core/AI/Tasks/EyeSentinelBTTask_TrackPlayer.h"
-#include "Core/AI/NTCompanionPawn.h"
+#include "Core/AI/NTCompanionCharacter.h"
 #include <Kismet/GameplayStatics.h>
 #include "AIController.h"
 #include "GameFramework/Actor.h"
@@ -34,7 +34,7 @@ EBTNodeResult::Type UEyeSentinelBTTask_TrackPlayer::ExecuteTask(UBehaviorTreeCom
     if (ActorsToIgnore.IsEmpty()) {
         ActorsToIgnore.Add(Pawn);
         ActorsToIgnore.Add(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-        ActorsToIgnore.Add(UGameplayStatics::GetActorOfClass(GetWorld(), ANTCompanionPawn::StaticClass()));
+        ActorsToIgnore.Add(UGameplayStatics::GetActorOfClass(GetWorld(), ANTCompanionCharacter::StaticClass()));
     }
 
     UE_LOG(LogEyeSentinelBTTaskTrackPlayer, Display, TEXT("[DEBUG] Before Time: %f"), CurrentTime);

@@ -11,7 +11,7 @@
 #include "Components/TextRenderComponent.h"
 #include "GameFramework/Controller.h"
 #include "Engine/DamageEvents.h"
-#include "Core/AI/NTCompanionPawn.h"
+#include "Core/AI/NTCompanionCharacter.h"
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
 
@@ -73,7 +73,7 @@ void ANTBaseCharacter::BeginPlay()
 
     LandedDelegate.AddDynamic(this, &ANTBaseCharacter::OnGroundLanded);
 
-    Companion = Cast<ANTCompanionPawn>(UGameplayStatics::GetActorOfClass(GetWorld(), ANTCompanionPawn::StaticClass()));
+    Companion = Cast<ANTCompanionCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ANTCompanionCharacter::StaticClass()));
 }
 
 void ANTBaseCharacter::Tick(float DeltaTime)

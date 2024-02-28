@@ -11,6 +11,8 @@
 #include "BehaviorTree/BlackboardComponent.h"
 #include <Kismet/GameplayStatics.h>
 #include "Components/SplineComponent.h"
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include <AIController.h>
 
 DEFINE_LOG_CATEGORY_STATIC(LogEyeSentinel, All, All)
@@ -90,6 +92,13 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
 void ANTEyeSentinelCharacter::OnDeath(bool GetAbility)
 {
     Destroy();
+    if (!ExplosionEffect)
+    {
+        return;
+    }
+
+    UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+        GetWorld(), ExplosionEffect, GetActorLocation(), FRotator(1.0f), FVector(1.0f), true, true);
 }
 
 void ANTEyeSentinelCharacter::OnPlayerDeath() {

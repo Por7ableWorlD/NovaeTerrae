@@ -10,6 +10,7 @@ class UC3_LAA_MainComponent;
 class UStaticMeshComponent;
 class UNTHealthComponent;
 class USplineComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class NOVAETERRAE_API ANTEyeSentinelCharacter : public ACharacter
@@ -36,6 +37,9 @@ public:
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior", meta = (ClampMin = "100.0", ClampMax = "5000.0"))
     float AttackRadius = 3000.0f;
+
+    UPROPERTY(EditAnywhere, Category = "DeathExplosion")
+    UNiagaraSystem* ExplosionEffect;
 
 protected:
 	virtual void BeginPlay() override;
