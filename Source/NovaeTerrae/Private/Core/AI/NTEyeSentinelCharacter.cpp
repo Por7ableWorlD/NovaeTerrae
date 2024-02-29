@@ -91,14 +91,12 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
 
 void ANTEyeSentinelCharacter::OnDeath(bool GetAbility)
 {
-    Destroy();
-    if (!ExplosionEffect)
+    if (ExplosionEffect)
     {
-        return;
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(GetWorld(), ExplosionEffect, GetActorLocation());
     }
-
-    UNiagaraComponent* NiagaraComp = UNiagaraFunctionLibrary::SpawnSystemAtLocation(
-        GetWorld(), ExplosionEffect, GetActorLocation(), FRotator(1.0f), FVector(1.0f), true, true);
+    
+    Destroy();
 }
 
 void ANTEyeSentinelCharacter::OnPlayerDeath() {
