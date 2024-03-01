@@ -6,6 +6,7 @@
 #include <BehaviorTree/BlackboardComponent.h>
 #include "Core/Characters/NTBaseCharacter.h"
 #include <AIController.h>
+#include <Core/Dev/GameplayTags/StatusGameplayTags.h>
 #include "GameFramework/Character.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogEnemyHealthComponent, All, All)
@@ -26,6 +27,11 @@ void UNTEnemyHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
     if (!DamageCauser->IsA<ANTBaseCharacter>())
+    {
+        return;
+    }
+
+    if (GameTags.HasTag(FStatusGameplayTags::Get().Invulnerability))
     {
         return;
     }

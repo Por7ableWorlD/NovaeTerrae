@@ -32,6 +32,8 @@ public:
     UNiagaraSystem* DeathEffect;
 
 protected:
+    FTimerHandle ShieldTimerHandle;
+
 	virtual void BeginPlay() override;
 
     void OnCurrentHealthChanged(float CurrentHealth);
@@ -39,4 +41,6 @@ protected:
     void OnDeath(bool GetAbility = false);
 
     void OnShieldEnable();
+
+    void OnShieldDisable();
 };

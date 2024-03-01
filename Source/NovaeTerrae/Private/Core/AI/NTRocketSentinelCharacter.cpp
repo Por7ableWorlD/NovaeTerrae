@@ -10,6 +10,8 @@
 #include "NiagaraFunctionLibrary.h"
 #include "NiagaraComponent.h"
 #include <AIController.h>
+#include <Core/Dev/GameplayTags/StatusGameplayTags.h>
+#include "GameplayTagContainer.h"
 
 DEFINE_LOG_CATEGORY_STATIC(LogRocketSentinel, All, All)
 
@@ -74,5 +76,16 @@ void ANTRocketSentinelCharacter::OnShieldEnable()
     AAIController* AIController = GetController<AAIController>();
 
     check(AIController);
-    AIController->GetBlackboardComponent()->SetValueAsBool(FName("IsShieldAvailable"), true);
+
+    HealthComponent->GameTags.AddTag(FStatusGameplayTags::Get().Invulnerability);
+    if (GEngine)
+        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Rocket Sentinel Shield Activated!"));
+    GetWorld()->GetTimerManager().SetTimer(ShieldTimerHandle, this, &ANTRocketSentinelCharacter::OnShieldDisable, 3.0f, false);
+}
+
+void ANTRocketSentinelCharacter::OnShieldDisable() 
+{
+    HealthComponent->GameTags.RemoveTag(FStatusGameplayTags::Get().Invulnerability);
+    if (GEngine)
+        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Rocket Sentinel Shield Deactivated!"));
 }

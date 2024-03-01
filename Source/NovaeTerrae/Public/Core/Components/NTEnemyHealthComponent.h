@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Core/Components/NTHealthComponent.h"
+#include "GameplayTagContainer.h"
 #include "NTEnemyHealthComponent.generated.h"
 
 DECLARE_MULTICAST_DELEGATE(FOnActionThresholdReached);
@@ -29,6 +30,8 @@ public:
     void OnTakeDamageFromEnemy(AAIController* AIController);
 
     void CheckActionThreshold();
+
+    FGameplayTagContainer GameTags;
 
 protected:
     virtual void BeginPlay() override;
