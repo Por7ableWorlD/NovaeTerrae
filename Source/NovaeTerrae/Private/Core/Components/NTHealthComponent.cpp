@@ -66,25 +66,6 @@ void UNTHealthComponent::OnTakeAnyDamage(
     }
 }
 
-void UNTHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
-{
-    if (SetDefaultMaxHealthUsed)
-    {
-        return;
-    }
-
-    MaxHealth = NewMaxHealth;
-    SetDefaultMaxHealthUsed = true;
-    SetHealth(MaxHealth);
-}
-
-// Change later with new HealthComponent
-void UNTHealthComponent::RestoreFullHealth() 
-{
-    CurrentHealth = MaxHealth;
-    OnPlayerDeath.Broadcast();
-}
-
 void UNTHealthComponent::SetHealth(float NewHealth)
 {
     CurrentHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
