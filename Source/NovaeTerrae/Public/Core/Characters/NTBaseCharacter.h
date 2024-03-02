@@ -16,6 +16,9 @@ class UTextRenderComponent;
 class ANTCompanionCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnResetDeathSignature);
+DECLARE_MULTICAST_DELEGATE(FOnSacrificeRequestSignature);
+DECLARE_MULTICAST_DELEGATE(FOnFastReloadRequestSignature);
+DECLARE_MULTICAST_DELEGATE(FOnScanRequestSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDDeathSignature, bool, IsLazer);
 
 UCLASS()
@@ -37,6 +40,12 @@ public:
 
     UPROPERTY(BlueprintAssignable);
     FOnDDeathSignature OnDeathSignature;
+
+    FOnSacrificeRequestSignature OnSacrificeRequestSignature;
+
+    FOnFastReloadRequestSignature OnFastReloadRequestSignature;
+
+    FOnScanRequestSignature OnScanRequestSignature;
 
     FGameplayTagContainer GameTags;
 
@@ -136,6 +145,7 @@ private:
     void OnThirstRemove();
 
     void OnSacrifice();
+    void SacrificingHeal(float SacrificedHealth);
 
     void OnScan();
 
