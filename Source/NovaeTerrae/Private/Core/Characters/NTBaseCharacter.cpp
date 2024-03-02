@@ -12,6 +12,7 @@
 #include "GameFramework/Controller.h"
 #include "Engine/DamageEvents.h"
 #include "Core/AI/NTCompanionCharacter.h"
+#include <Core/Dev/GameplayTags/StatusGameplayTags.h>
 #include "Kismet/GameplayStatics.h"
 #include "GameFramework/PlayerStart.h"
 
@@ -117,6 +118,8 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
         PlayerInput->BindAction(RunAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnStartRunnig);
         PlayerInput->BindAction(RunAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopRunnig);
+
+        PlayerInput->BindAction(ThirstRemoveAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnThirstRemove);
     }
 }
 
@@ -209,6 +212,24 @@ void ANTBaseCharacter::OnResetDash()
    // UE_LOG(LogBaseCharacter, Error, TEXT("Heal: %f"), HealthComponent->GetMaxHealth());
 }
 
+void ANTBaseCharacter::OnThirstRemove() 
+{
+    if (!GameTags.HasTag(FStatusGameplayTags::Get().Thirst))
+    {
+        return;
+    }
+
+    ThirstComponent->SetThirst(0);
+    GameTags.RemoveTag(FStatusGameplayTags::Get().Thirst);
+    UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, Companion, nullptr);
+}
+
+void ANTBaseCharacter::OnSacrifice() {}
+
+void ANTBaseCharacter::OnScan() {}
+
+void ANTBaseCharacter::OnFastReload() {}
+
 void ANTBaseCharacter::OnResetDeath()
 {
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
@@ -274,10 +295,4 @@ void ANTBaseCharacter::OnGroundLanded(const FHitResult& Hit)
     }
 
     TakeDamage(HealthComponentPrivet->GetCurrentHealth(), FDamageEvent{}, nullptr, nullptr);
-}
-
-void ANTBaseCharacter::BitCompanion()
-{
-    ThirstComponent->SetThirst(0);
-    UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, Companion, nullptr);
 }

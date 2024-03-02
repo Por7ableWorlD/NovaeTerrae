@@ -10,6 +10,10 @@ struct NOVAETERRAE_API FStatusGameplayTags : public FGameplayTagNativeAdder
 {
     FGameplayTag Invulnerability;
 
+    FGameplayTag Stun;
+
+    FGameplayTag Thirst;
+
     FORCEINLINE static const FStatusGameplayTags& Get() { return StatusTags; }
 
 protected:
@@ -18,6 +22,8 @@ protected:
         UGameplayTagsManager& Manager = UGameplayTagsManager::Get();
 
         Invulnerability = Manager.AddNativeGameplayTag(TEXT("Status.Invulnerability"));
+        Stun = Manager.AddNativeGameplayTag(TEXT("Status.Stun"));
+        Thirst = Manager.AddNativeGameplayTag(TEXT("Status.Thirst"));
     }
 
 private:

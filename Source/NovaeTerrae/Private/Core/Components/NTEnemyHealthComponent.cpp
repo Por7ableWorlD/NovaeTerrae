@@ -92,7 +92,7 @@ void UNTEnemyHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
 
     MaxHealth = NewMaxHealth;
     SetDefaultMaxHealthUsed = true;
-    SetHealth(MaxHealth);
+    RestoreFullHealth();
 }
 
 void UNTEnemyHealthComponent::RestoreFullHealth()

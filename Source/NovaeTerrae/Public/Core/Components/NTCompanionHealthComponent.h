@@ -32,6 +32,15 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal", ClampMin = "0.0"))
     float AutoHealStartLimit = 0.0f;
 
+    UPROPERTY(EditDefaultsOnly, Category = "Cooldown", meta = (ClampMin = "0.0", ClampMax = "120.0"))
+    float SacrificeCooldown = 0.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Cooldown", meta = (ClampMin = "0.0", ClampMax = "120.0"))
+    float FastReloadCooldown = 20.0f;
+
+    UPROPERTY(EditDefaultsOnly, Category = "Cooldown", meta = (ClampMin = "0.0", ClampMax = "120.0"))
+    float ScanCooldown = 15.0f;
+
 private:
     FTimerHandle HealTimerHandle;
 

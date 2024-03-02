@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "GameplayTagContainer.h"
 #include "NTBaseCharacter.generated.h"
 
 class UCameraComponent;
@@ -31,14 +32,13 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning() const;
 
-    UFUNCTION(BlueprintCallable, Category = "Companion")
-    void BitCompanion();
-
     UPROPERTY(BlueprintAssignable);
     FOnResetDeathSignature OnResetDeathSignature;
 
     UPROPERTY(BlueprintAssignable);
     FOnDDeathSignature OnDeathSignature;
+
+    FGameplayTagContainer GameTags;
 
 protected:
     virtual void BeginPlay() override;
@@ -90,6 +90,18 @@ protected:
     
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* DashAction;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* ThirstRemoveAction;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* SacrificeAction;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* FastReloadAction;
+    
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* ScanAction;
 #pragma endregion
 
 private:
@@ -120,6 +132,14 @@ private:
 
     void OnDash();
     void OnResetDash();
+
+    void OnThirstRemove();
+
+    void OnSacrifice();
+
+    void OnScan();
+
+    void OnFastReload();
 
     void OnResetDeath();
 
