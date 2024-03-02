@@ -54,7 +54,10 @@ void ANTRocketSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
 {
     AAIController* AIController = GetController<AAIController>();
 
-    check(AIController);
+    if (!AIController)
+    {
+        return;
+    }
 
     HealthComponent->OnTakeDamageFromEnemy(AIController);
 
@@ -75,7 +78,10 @@ void ANTRocketSentinelCharacter::OnShieldEnable()
 {
     AAIController* AIController = GetController<AAIController>();
 
-    check(AIController);
+    if (!AIController)
+    {
+        return;
+    }
 
     HealthComponent->GameTags.AddTag(FStatusGameplayTags::Get().Invulnerability);
     if (GEngine)
@@ -86,6 +92,8 @@ void ANTRocketSentinelCharacter::OnShieldEnable()
 void ANTRocketSentinelCharacter::OnShieldDisable() 
 {
     HealthComponent->GameTags.RemoveTag(FStatusGameplayTags::Get().Invulnerability);
+    GetWorld()->GetTimerManager().ClearTimer(ShieldTimerHandle);
+
     if (GEngine)
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("Rocket Sentinel Shield Deactivated!"));
 }

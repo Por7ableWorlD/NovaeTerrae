@@ -75,6 +75,13 @@ void ANTBaseCharacter::BeginPlay()
     LandedDelegate.AddDynamic(this, &ANTBaseCharacter::OnGroundLanded);
 
     Companion = Cast<ANTCompanionCharacter>(UGameplayStatics::GetActorOfClass(GetWorld(), ANTCompanionCharacter::StaticClass()));
+
+    if (!Companion)
+    {
+        return;
+    }
+
+    Companion->OnSacrificeStart.AddUObject(this, &ANTBaseCharacter::SacrificingHeal);
 }
 
 void ANTBaseCharacter::Tick(float DeltaTime)
@@ -120,6 +127,12 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         PlayerInput->BindAction(RunAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopRunnig);
 
         PlayerInput->BindAction(ThirstRemoveAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnThirstRemove);
+
+        PlayerInput->BindAction(SacrificeAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnSacrifice);
+
+        PlayerInput->BindAction(FastReloadAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnFastReload);
+
+        PlayerInput->BindAction(ScanAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnScan);
     }
 }
 
@@ -224,11 +237,31 @@ void ANTBaseCharacter::OnThirstRemove()
     UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, Companion, nullptr);
 }
 
-void ANTBaseCharacter::OnSacrifice() {}
+void ANTBaseCharacter::OnSacrifice() 
+{
+    if (HealthComponentPrivet->GetCurrentHealth() == HealthComponentPrivet->GetMaxHealth())
+    {
+        return;
+    }
 
-void ANTBaseCharacter::OnScan() {}
+    OnSacrificeRequestSignature.Broadcast();
+}
 
-void ANTBaseCharacter::OnFastReload() {}
+void ANTBaseCharacter::SacrificingHeal(float SacrificedHealth)
+{
+    float NewHealth = HealthComponentPrivet->GetCurrentHealth() + SacrificedHealth;
+    HealthComponentPrivet->SetHealth(NewHealth);
+}
+
+void ANTBaseCharacter::OnScan()
+{
+    OnScanRequestSignature.Broadcast();
+}
+
+void ANTBaseCharacter::OnFastReload()
+{
+    OnFastReloadRequestSignature.Broadcast();
+}
 
 void ANTBaseCharacter::OnResetDeath()
 {

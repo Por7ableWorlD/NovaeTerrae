@@ -58,7 +58,10 @@ void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
 {
     AAIController* AIController = GetController<AAIController>();
 
-    check(AIController);
+    if (!AIController)
+    {
+        return;
+    }
 
     HealthComponent->OnTakeDamageFromEnemy(AIController);
 
@@ -79,6 +82,10 @@ void ANTEyeSentinelCharacter::OnStrafeEnable()
 {
     AAIController* AIController = GetController<AAIController>();
 
-    check(AIController);
+    if (!AIController)
+    {
+        return;
+    }
+
     AIController->GetBlackboardComponent()->SetValueAsBool(FName("IsStrafeAvailable"), true);
 }
