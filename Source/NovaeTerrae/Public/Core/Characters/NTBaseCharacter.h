@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "InputActionValue.h"
+#include "GameplayTagContainer.h"
 #include "NTBaseCharacter.generated.h"
 
 class UCameraComponent;
@@ -15,6 +16,9 @@ class UTextRenderComponent;
 class ANTCompanionCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnResetDeathSignature);
+DECLARE_MULTICAST_DELEGATE(FOnSacrificeRequestSignature);
+DECLARE_MULTICAST_DELEGATE(FOnFastReloadRequestSignature);
+DECLARE_MULTICAST_DELEGATE(FOnScanRequestSignature);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDDeathSignature, bool, IsLazer);
 
 UCLASS()
@@ -31,14 +35,19 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsRunning() const;
 
-    UFUNCTION(BlueprintCallable, Category = "Companion")
-    void BitCompanion();
-
     UPROPERTY(BlueprintAssignable);
     FOnResetDeathSignature OnResetDeathSignature;
 
     UPROPERTY(BlueprintAssignable);
     FOnDDeathSignature OnDeathSignature;
+
+    FOnSacrificeRequestSignature OnSacrificeRequestSignature;
+
+    FOnFastReloadRequestSignature OnFastReloadRequestSignature;
+
+    FOnScanRequestSignature OnScanRequestSignature;
+
+    FGameplayTagContainer GameTags;
 
 protected:
     virtual void BeginPlay() override;
@@ -90,6 +99,18 @@ protected:
     
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* DashAction;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* ThirstRemoveAction;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* SacrificeAction;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* FastReloadAction;
+    
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* ScanAction;
 #pragma endregion
 
 private:
@@ -120,6 +141,15 @@ private:
 
     void OnDash();
     void OnResetDash();
+
+    void OnThirstRemove();
+
+    void OnSacrifice();
+    void SacrificingHeal(float SacrificedHealth);
+
+    void OnScan();
+
+    void OnFastReload();
 
     void OnResetDeath();
 

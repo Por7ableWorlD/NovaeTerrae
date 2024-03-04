@@ -14,6 +14,8 @@ class NOVAETERRAE_API UNTCompanionHealthComponent : public UNTHealthComponent
 public:
     UNTCompanionHealthComponent();
 
+    bool CheckHealthThreshold(float SkillThreshold);
+
 protected:
     virtual void BeginPlay() override;
 

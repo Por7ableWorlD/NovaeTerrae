@@ -1,0 +1,46 @@
+// NOVAE TERRAE. All Rights Reserved.
+
+#pragma once
+
+#include "CoreMinimal.h"
+#include "GameFramework/Character.h"
+#include "NTRocketSentinelCharacter.generated.h"
+
+class UC3_LAA_MainComponent;
+class UStaticMeshComponent;
+class UNTEnemyHealthComponent;
+class UNiagaraSystem;
+
+UCLASS()
+class NOVAETERRAE_API ANTRocketSentinelCharacter : public ACharacter
+{
+	GENERATED_BODY()
+
+public:
+	ANTRocketSentinelCharacter();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UStaticMeshComponent* StaticMeshComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UC3_LAA_MainComponent* LAAComponent;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UNTEnemyHealthComponent* HealthComponent;
+
+    UPROPERTY(EditAnywhere, Category = "VFX")
+    UNiagaraSystem* DeathEffect;
+
+protected:
+    FTimerHandle ShieldTimerHandle;
+
+	virtual void BeginPlay() override;
+
+    void OnCurrentHealthChanged(float CurrentHealth);
+
+    void OnDeath(bool GetAbility = false);
+
+    void OnShieldEnable();
+
+    void OnShieldDisable();
+};

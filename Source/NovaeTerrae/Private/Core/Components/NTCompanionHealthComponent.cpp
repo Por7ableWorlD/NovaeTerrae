@@ -10,6 +10,18 @@ DEFINE_LOG_CATEGORY_STATIC(LogCompanionHealthComponent, All, All)
 
 UNTCompanionHealthComponent::UNTCompanionHealthComponent() {}
 
+bool UNTCompanionHealthComponent::CheckHealthThreshold(float SkillThreshold)
+{
+    float HealthThresholdValue = SkillThreshold / 100 * MaxHealth;
+
+    if (HealthThresholdValue <= GetCurrentHealth())
+    {
+        return true;
+    }
+
+    return false;
+}
+
 void UNTCompanionHealthComponent::BeginPlay()
 {
     Super::BeginPlay();
