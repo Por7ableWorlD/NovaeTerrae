@@ -276,8 +276,15 @@ void ANTBaseCharacter::OnResetDeath()
         UE_LOG(LogBaseCharacter, Warning, TEXT("[Warning] Can't find player's start object!"));
     }
 
-    Companion->TeleportTo(PlayerStart->GetActorLocation() + FVector(100.0f, 0.0f, 0.0f), PlayerStart->GetActorRotation());
     this->TeleportTo(PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());  
+
+    if (!Companion)
+    {
+        return;
+    }
+
+    Companion->TeleportTo(PlayerStart->GetActorLocation() + FVector(100.0f, 0.0f, 0.0f), PlayerStart->GetActorRotation());
+    
     
 }
 
