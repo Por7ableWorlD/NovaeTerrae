@@ -26,7 +26,7 @@ void UNTEnemyHealthComponent::BeginPlay()
 void UNTEnemyHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (!DamageCauser->IsA<ANTBaseCharacter>())
+    if (!DamageCauser || !DamageCauser->IsA<ANTBaseCharacter>())
     {
         return;
     }
