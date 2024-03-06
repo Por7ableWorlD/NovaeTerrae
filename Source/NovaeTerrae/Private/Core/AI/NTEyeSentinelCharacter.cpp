@@ -43,7 +43,7 @@ void ANTEyeSentinelCharacter::BeginPlay()
     check(HealthComponent);
     check(SplineComponent);
 
-    HealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTEyeSentinelCharacter::OnCurrentHealthChanged);
+    HealthComponent->OnTakeDamageFromPlayer.AddUObject(this, &ANTEyeSentinelCharacter::EnableAgressiveMode);
 
     HealthComponent->OnDeath.AddUObject(this, &ANTEyeSentinelCharacter::OnDeath);
 
@@ -54,7 +54,7 @@ void ANTEyeSentinelCharacter::BeginPlay()
     LAAComponent->SetFollowSpeed(10.0f);
 }
 
-void ANTEyeSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
+void ANTEyeSentinelCharacter::EnableAgressiveMode()
 {
     AAIController* AIController = GetController<AAIController>();
 

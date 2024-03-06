@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "NTEnemyHealthComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE(FOnTakeDamageFromEnemy);
 DECLARE_MULTICAST_DELEGATE(FOnActionThresholdReached);
 
 class AAIController;
@@ -20,6 +21,7 @@ public:
     UNTEnemyHealthComponent();
 
     FOnActionThresholdReached OnActionThresholdReached;
+    FOnTakeDamageFromEnemy OnTakeDamageFromPlayer;
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior", meta = (ClampMin = "0.1", ClampMax = "100.0"))
     float ActionThresholdPercentage = 25.0f;

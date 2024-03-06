@@ -41,7 +41,7 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-    void OnCurrentHealthChanged(float CurrentHealth);
+    void EnableAgressiveMode();
 
     void OnDeath(bool GetAbility = false);
 

@@ -36,6 +36,8 @@ void UNTEnemyHealthComponent::OnTakeAnyDamage(
         return;
     }
 
+    OnTakeDamageFromPlayer.Broadcast();
+
     Super::OnTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
 }
 

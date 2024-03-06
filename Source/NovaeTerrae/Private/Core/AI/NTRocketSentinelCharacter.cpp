@@ -38,7 +38,7 @@ void ANTRocketSentinelCharacter::BeginPlay()
     check(LAAComponent);
     check(HealthComponent);
 
-    HealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTRocketSentinelCharacter::OnCurrentHealthChanged);
+    HealthComponent->OnTakeDamageFromPlayer.AddUObject(this, &ANTRocketSentinelCharacter::EnableAgressiveMode);
 
     HealthComponent->OnDeath.AddUObject(this, &ANTRocketSentinelCharacter::OnDeath);
 
@@ -50,7 +50,7 @@ void ANTRocketSentinelCharacter::BeginPlay()
 	
 }
 
-void ANTRocketSentinelCharacter::OnCurrentHealthChanged(float CurrentHealth)
+void ANTRocketSentinelCharacter::EnableAgressiveMode()
 {
     AAIController* AIController = GetController<AAIController>();
 
