@@ -34,8 +34,12 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal", meta = (EditCondition = "AutoHeal", ClampMin = "0.0"))
     float AutoHealStartLimit = 0.0f;
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetDefaultMaxHealth(float NewMaxHealth);
+
 private:
     FTimerHandle HealTimerHandle;
+    bool SetDefaultMaxHealthUsed = false;
 
     void OnTakeAnyDamage(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy,
         AActor* DamageCauser) override;

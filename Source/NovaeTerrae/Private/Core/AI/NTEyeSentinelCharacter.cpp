@@ -7,7 +7,6 @@
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
-#include <C3_LAA_MainComponent.h>
 #include "BehaviorTree/BlackboardComponent.h"
 #include <Kismet/GameplayStatics.h>
 #include "Components/SplineComponent.h"
@@ -28,8 +27,6 @@ ANTEyeSentinelCharacter::ANTEyeSentinelCharacter()
     StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
     StaticMeshComponent->SetupAttachment(GetRootComponent());
 
-    LAAComponent = CreateDefaultSubobject<UC3_LAA_MainComponent>("LAAComponent");
-
     HealthComponent = CreateDefaultSubobject<UNTEnemyHealthComponent>("HealthComponent");
 
     SplineComponent = CreateDefaultSubobject<USplineComponent>("SplineComponent");
@@ -39,7 +36,6 @@ void ANTEyeSentinelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-    check(LAAComponent);
     check(HealthComponent);
     check(SplineComponent);
 
@@ -48,10 +44,6 @@ void ANTEyeSentinelCharacter::BeginPlay()
     HealthComponent->OnDeath.AddUObject(this, &ANTEyeSentinelCharacter::OnDeath);
 
     HealthComponent->OnActionThresholdReached.AddUObject(this, &ANTEyeSentinelCharacter::OnStrafeEnable);
-
-    LAAComponent->SetViewTargetActor(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    LAAComponent->SetEnable(false);
-    LAAComponent->SetFollowSpeed(10.0f);
 }
 
 void ANTEyeSentinelCharacter::EnableAgressiveMode()
@@ -65,7 +57,6 @@ void ANTEyeSentinelCharacter::EnableAgressiveMode()
 
     HealthComponent->OnTakeDamageFromEnemy(AIController);
 
-    LAAComponent->SetEnable(true);
 }
 
 void ANTEyeSentinelCharacter::OnDeath(bool GetAbility)

@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "NTRocketSentinelCharacter.generated.h"
 
-class UC3_LAA_MainComponent;
 class UStaticMeshComponent;
 class UNTEnemyHealthComponent;
 class UNiagaraSystem;
@@ -23,13 +22,13 @@ public:
     UStaticMeshComponent* StaticMeshComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UC3_LAA_MainComponent* LAAComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTEnemyHealthComponent* HealthComponent;
 
     UPROPERTY(EditAnywhere, Category = "VFX")
     UNiagaraSystem* DeathEffect;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Behavior")
+    float ShieldDuration;
 
 protected:
     FTimerHandle ShieldTimerHandle;

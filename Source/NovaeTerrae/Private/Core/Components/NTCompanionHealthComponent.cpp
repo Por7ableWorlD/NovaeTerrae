@@ -27,6 +27,17 @@ void UNTCompanionHealthComponent::BeginPlay()
     Super::BeginPlay();
 }
 
+void UNTCompanionHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
+{
+    if (SetDefaultMaxHealthUsed)
+    {
+        return;
+    }
+
+    MaxHealth = NewMaxHealth;
+    SetDefaultMaxHealthUsed = true;
+}
+
 void UNTCompanionHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
