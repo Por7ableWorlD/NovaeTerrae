@@ -23,11 +23,12 @@ public:
     FOnActionThresholdReached OnActionThresholdReached;
     FOnTakeDamageFromEnemy OnTakeDamageFromPlayer;
 
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior", meta = (ClampMin = "0.1", ClampMax = "100.0"))
-    float ActionThresholdPercentage = 25.0f;
-
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior")
     bool EnableActionThreshold = true;
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior",
+        meta = (EditCondition = "EnableActionThreshold", ClampMin = "0.1", ClampMax = "100.0"))
+    float ActionThresholdPercentage = 25.0f;
 
     void OnTakeDamageFromEnemy(AAIController* AIController);
 
