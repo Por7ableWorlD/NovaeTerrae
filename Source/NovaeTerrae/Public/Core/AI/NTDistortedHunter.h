@@ -20,6 +20,13 @@ public:
     UNTEnemyHealthComponent* HealthComponent;
 
 protected:
+
+    UPROPERTY(EditDefaultsOnly, Category = "Animations")
+    UAnimMontage* DeathAnimMontage;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Animations")
+    bool IsDead = false;
+
 	virtual void BeginPlay() override;
 
     void EnableAgressiveMode();

@@ -42,6 +42,26 @@ void ANTDistortedHunter::EnableAgressiveMode()
     HealthComponent->OnTakeDamageFromEnemy(AIController);
 }
 
-void ANTDistortedHunter::OnDeath(bool GetAbility) {}
+void ANTDistortedHunter::OnDeath(bool GetAbility)
+{
+    AAIController* AIController = GetController<AAIController>();
+
+    if (!AIController)
+    {
+        return;
+    }
+
+    AIController->UnPossess();
+
+    if (!DeathAnimMontage)
+    {
+        return;
+    }
+
+    IsDead = true;
+
+    DeathAnimMontage->bEnableAutoBlendOut = true;
+    PlayAnimMontage(DeathAnimMontage);
+}
 
 
