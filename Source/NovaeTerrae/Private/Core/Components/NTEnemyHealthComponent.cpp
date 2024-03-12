@@ -26,10 +26,10 @@ void UNTEnemyHealthComponent::BeginPlay()
 void UNTEnemyHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (!DamageCauser || !DamageCauser->IsA<ANTBaseCharacter>())
+    /*if (!DamageCauser || !DamageCauser->IsA<ANTBaseCharacter>())
     {
         return;
-    }
+    }*/
 
     if (GameTags.HasTag(FStatusGameplayTags::Get().Invulnerability))
     {
