@@ -14,7 +14,7 @@ class UTextRenderComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSacrificeStart, float);
 DECLARE_MULTICAST_DELEGATE(FOnFastReloadStart);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFastReloadEnd);
+DECLARE_MULTICAST_DELEGATE(FOnFastReloadEnd);
 
 UCLASS()
 class NOVAETERRAE_API ANTCompanionCharacter : public ACharacter
@@ -40,7 +40,6 @@ public:
 
     FOnFastReloadStart OnFastReloadStart;
 
-    UPROPERTY(BlueprintAssignable);
     FOnFastReloadEnd OnFastReloadEnd;
 
 protected:

@@ -19,9 +19,6 @@ class NOVAETERRAE_API ANTEyeSentinelCharacter : public ACharacter
 public:
 	ANTEyeSentinelCharacter();
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UStaticMeshComponent* StaticMeshComponent;
-
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTEnemyHealthComponent* HealthComponent;
 

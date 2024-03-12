@@ -24,9 +24,6 @@ ANTEyeSentinelCharacter::ANTEyeSentinelCharacter()
     
     GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
-    StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
-    StaticMeshComponent->SetupAttachment(GetRootComponent());
-
     HealthComponent = CreateDefaultSubobject<UNTEnemyHealthComponent>("HealthComponent");
 
     SplineComponent = CreateDefaultSubobject<USplineComponent>("SplineComponent");

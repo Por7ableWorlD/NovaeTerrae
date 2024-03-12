@@ -82,6 +82,8 @@ void ANTBaseCharacter::BeginPlay()
     }
 
     Companion->OnSacrificeStart.AddUObject(this, &ANTBaseCharacter::SacrificingHeal);
+    Companion->OnFastReloadStart.AddUObject(this, &ANTBaseCharacter::OnFastReloadEnable);
+    Companion->OnFastReloadEnd.AddUObject(this, &ANTBaseCharacter::OnFastReloadDisable);
 }
 
 void ANTBaseCharacter::Tick(float DeltaTime)
@@ -261,6 +263,16 @@ void ANTBaseCharacter::OnScan()
 void ANTBaseCharacter::OnFastReload()
 {
     OnFastReloadRequestSignature.Broadcast();
+}
+
+void ANTBaseCharacter::OnFastReloadEnable() 
+{
+    IsFastReloadEnabled = true;
+}
+
+void ANTBaseCharacter::OnFastReloadDisable() 
+{
+    IsFastReloadEnabled = false;
 }
 
 void ANTBaseCharacter::OnResetDeath()
