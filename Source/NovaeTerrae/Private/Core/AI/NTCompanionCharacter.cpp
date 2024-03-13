@@ -52,6 +52,7 @@ void ANTCompanionCharacter::BeginPlay()
 
     LAAComponent->SetViewTargetActor(Player);
     LAAComponent->SetDestinationOffset(FVector(0.0f, 0.0f, 50.0f));
+    LAAComponent->SetEnable(false);
 }
 
 void ANTCompanionCharacter::OnCurrentHealthChanged(float CurrentHealth)
