@@ -26,11 +26,11 @@ void ANTDistortedHunter::BeginPlay()
 
     HealthComponent->OnTakeDamageFromPlayer.AddUObject(this, &ANTDistortedHunter::EnableAgressiveMode);
 
-    HealthComponent->OnDeath.AddUObject(this, &ANTDistortedHunter::OnDeath);
+    HealthComponent->OnDeath.AddDynamic(this, &ANTDistortedHunter::OnDeath);
 	
 }
 
-void ANTDistortedHunter::EnableAgressiveMode()
+void ANTDistortedHunter::EnableAgressiveMode(float Damage)
 {
     AAIController* AIController = GetController<AAIController>();
 

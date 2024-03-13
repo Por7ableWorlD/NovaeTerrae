@@ -6,6 +6,7 @@
 #include <BehaviorTree/BlackboardComponent.h>
 #include "Core/Characters/NTBaseCharacter.h"
 #include <AIController.h>
+#include "Core/AI/NTWeakPoint.h"
 #include <Core/Dev/GameplayTags/StatusGameplayTags.h>
 #include "GameFramework/Character.h"
 
@@ -26,7 +27,7 @@ void UNTEnemyHealthComponent::BeginPlay()
 void UNTEnemyHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (!DamageCauser || !DamageCauser->IsA<ANTBaseCharacter>())
+    if (!DamageCauser || (!DamageCauser->IsA<ANTBaseCharacter>() && !DamageCauser->IsA<ANTWeakPoint>()))
     {
         return;
     }
@@ -34,11 +35,21 @@ void UNTEnemyHealthComponent::OnTakeAnyDamage(
     if (GameTags.HasTag(FStatusGameplayTags::Get().Invulnerability))
     {
         return;
+    } 
+
+    if (DamageCauser->IsA<ANTBaseCharacter>())
+    {
+        float FinalDamage = Damage * (1 - (DamageResistancePercentage / 100));
+        OnTakeDamageFromPlayer.Broadcast(FinalDamage);
+        Super::OnTakeAnyDamage(DamagedActor, FinalDamage, DamageType, InstigatedBy, DamageCauser);
     }
 
-    OnTakeDamageFromPlayer.Broadcast();
+    if (DamageCauser->IsA<ANTWeakPoint>())
+    {
+        OnTakeDamageFromPlayer.Broadcast(Damage);
+        Super::OnTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+    }
 
-    Super::OnTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
 }
 
 void UNTEnemyHealthComponent::OnTakeDamageFromEnemy(AAIController* AIController) 

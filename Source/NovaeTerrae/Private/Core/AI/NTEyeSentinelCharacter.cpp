@@ -38,12 +38,12 @@ void ANTEyeSentinelCharacter::BeginPlay()
 
     HealthComponent->OnTakeDamageFromPlayer.AddUObject(this, &ANTEyeSentinelCharacter::EnableAgressiveMode);
 
-    HealthComponent->OnDeath.AddUObject(this, &ANTEyeSentinelCharacter::OnDeath);
+    HealthComponent->OnDeath.AddDynamic(this, &ANTEyeSentinelCharacter::OnDeath);
 
     HealthComponent->OnActionThresholdReached.AddUObject(this, &ANTEyeSentinelCharacter::OnStrafeEnable);
 }
 
-void ANTEyeSentinelCharacter::EnableAgressiveMode()
+void ANTEyeSentinelCharacter::EnableAgressiveMode(float Damage)
 {
     AAIController* AIController = GetController<AAIController>();
 

@@ -29,8 +29,9 @@ protected:
 
 	virtual void BeginPlay() override;
 
-    void EnableAgressiveMode();
+    void EnableAgressiveMode(float Damage);
 
+    UFUNCTION()
     void OnDeath(bool GetAbility = false);
 
 };

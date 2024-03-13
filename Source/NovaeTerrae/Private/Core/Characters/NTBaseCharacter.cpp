@@ -67,7 +67,7 @@ void ANTBaseCharacter::BeginPlay()
 
     OnCurrentHealthChanged(HealthComponentPrivet->GetCurrentHealth());
     HealthComponentPrivet->OnCurrentHealthChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentHealthChanged);
-    HealthComponentPrivet->OnDeath.AddUObject(this, &ANTBaseCharacter::OnDeath);
+    HealthComponentPrivet->OnDeath.AddDynamic(this, &ANTBaseCharacter::OnDeath);
 
     OnCurrentThirstChanged(ThirstComponent->GetCurrentThirst());
     ThirstComponent->OnCurrentThirstChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentThirstChanged);
@@ -279,7 +279,7 @@ void ANTBaseCharacter::OnResetDeath()
 {
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
     EnableInput(PlayerController);
-    OnResetDeathSignature.Broadcast();
+    OnResetPlayerDeathSignature.Broadcast();
     HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetMaxHealth());
 
     AActor* PlayerStart = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass());
@@ -330,7 +330,7 @@ void ANTBaseCharacter::OnDeath(bool IsLazer)
 
     //SetLifeSpan(LifeSpanOnDeath);
 
-    OnDeathSignature.Broadcast(IsLazer);
+    OnPlayerDeathSignature.Broadcast(IsLazer);
 
     UE_LOG(LogBaseCharacter, Display, TEXT("OnDeath event. Play montage Death"));
 }

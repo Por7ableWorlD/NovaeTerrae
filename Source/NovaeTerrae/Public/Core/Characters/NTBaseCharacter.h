@@ -36,10 +36,10 @@ public:
     bool IsRunning() const;
 
     UPROPERTY(BlueprintAssignable);
-    FOnResetDeathSignature OnResetDeathSignature;
+    FOnResetDeathSignature OnResetPlayerDeathSignature;
 
     UPROPERTY(BlueprintAssignable);
-    FOnDDeathSignature OnDeathSignature;
+    FOnDDeathSignature OnPlayerDeathSignature;
 
     FOnSacrificeRequestSignature OnSacrificeRequestSignature;
 
@@ -159,6 +159,8 @@ private:
     void OnResetDeath();
 
     void OnCurrentHealthChanged(float CurrentHealth);
+
+    UFUNCTION()
     void OnDeath(bool IsLazer);
 
     void OnCurrentThirstChanged(float CurrentThirst);

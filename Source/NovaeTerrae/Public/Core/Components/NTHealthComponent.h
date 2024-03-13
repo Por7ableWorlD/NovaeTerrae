@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "NTHealthComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, bool);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, bool, GetAbility);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentHealthChangedSignature, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -16,7 +16,8 @@ class NOVAETERRAE_API UNTHealthComponent : public UActorComponent
 
 public:
     UNTHealthComponent();
-
+    
+    UPROPERTY(BlueprintAssignable);
     FOnDeathSignature OnDeath;
     FOnCurrentHealthChangedSignature OnCurrentHealthChanged;
 
