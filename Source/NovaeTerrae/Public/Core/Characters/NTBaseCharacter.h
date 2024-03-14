@@ -16,7 +16,6 @@ class UTextRenderComponent;
 class ANTCompanionCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnResetDeathSignature);
-DECLARE_MULTICAST_DELEGATE(FOnThirstRemoveSignature);
 DECLARE_MULTICAST_DELEGATE(FOnSacrificeRequestSignature);
 DECLARE_MULTICAST_DELEGATE(FOnFastReloadRequestSignature);
 DECLARE_MULTICAST_DELEGATE(FOnScanRequestSignature);
@@ -37,12 +36,10 @@ public:
     bool IsRunning() const;
 
     UPROPERTY(BlueprintAssignable);
-    FOnResetDeathSignature OnResetPlayerDeathSignature;
+    FOnResetDeathSignature OnResetDeathSignature;
 
     UPROPERTY(BlueprintAssignable);
-    FOnDDeathSignature OnPlayerDeathSignature;
-
-    FOnThirstRemoveSignature OnThirstRemoveSignature;
+    FOnDDeathSignature OnDeathSignature;
 
     FOnSacrificeRequestSignature OnSacrificeRequestSignature;
 
@@ -83,9 +80,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Damage", meta = (ClampMin = "1000.0", ClampMax = "3500.0"))
     float LandedDeathVelocity = 1500.0f;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-    bool IsFastReloadEnabled = false;
 
 #pragma region Enhanced Inputs
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
@@ -156,14 +150,10 @@ private:
     void OnScan();
 
     void OnFastReload();
-    void OnFastReloadEnable();
-    void OnFastReloadDisable();
 
     void OnResetDeath();
 
     void OnCurrentHealthChanged(float CurrentHealth);
-
-    UFUNCTION()
     void OnDeath(bool IsLazer);
 
     void OnCurrentThirstChanged(float CurrentThirst);

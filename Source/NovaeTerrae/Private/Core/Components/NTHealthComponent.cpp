@@ -66,11 +66,6 @@ void UNTHealthComponent::OnTakeAnyDamage(
     }
 }
 
-void UNTHealthComponent::RestoreFullHealth() 
-{
-    SetHealth(MaxHealth);
-}
-
 void UNTHealthComponent::SetHealth(float NewHealth)
 {
     CurrentHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);

@@ -46,14 +46,12 @@ void ANTCompanionCharacter::BeginPlay()
         return;
     }
   
-    Player->OnThirstRemoveSignature.AddUObject(this, &ANTCompanionCharacter::OnThirstRemoveRequest);
     Player->OnSacrificeRequestSignature.AddUObject(this, &ANTCompanionCharacter::OnSacrificeRequest);
     Player->OnFastReloadRequestSignature.AddUObject(this, &ANTCompanionCharacter::OnFastReloadRequest);
     Player->OnScanRequestSignature.AddUObject(this, &ANTCompanionCharacter::OnScanRequest);
 
     LAAComponent->SetViewTargetActor(Player);
     LAAComponent->SetDestinationOffset(FVector(0.0f, 0.0f, 50.0f));
-    LAAComponent->SetEnable(false);
 }
 
 void ANTCompanionCharacter::OnCurrentHealthChanged(float CurrentHealth)
@@ -61,13 +59,7 @@ void ANTCompanionCharacter::OnCurrentHealthChanged(float CurrentHealth)
     HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
 }
 
-void ANTCompanionCharacter::OnThirstRemoveRequest() 
-{
-    float SacrificedHealth = FMath::Clamp(ThirstRemoveHealthCost, 0.0f, CompanionHealthComponent->GetCurrentHealth());
-    UGameplayStatics::ApplyDamage(this, SacrificedHealth, Controller, this, nullptr);
-}
-
-void ANTCompanionCharacter::OnSacrificeRequest()
+void ANTCompanionCharacter::OnSacrificeRequest() 
 {
     if (!CompanionHealthComponent->CheckHealthThreshold(SacrificeThreshold))
     {
@@ -84,7 +76,7 @@ void ANTCompanionCharacter::OnSacrificeRequest()
     }
     if (GEngine)
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("SacrificeSuccessful"));
-    float SacrificedHealth = FMath::Clamp(HealthSacrifice, 0.0f, CompanionHealthComponent->GetCurrentHealth());
+    float SacrificedHealth = FMath::Clamp(HealthSacrifice, 0.0f, CompanionHealthComponent->GetMaxHealth());
 
     OnSacrificeStart.Broadcast(SacrificedHealth);
     UGameplayStatics::ApplyDamage(this, SacrificedHealth, Controller, this, nullptr);

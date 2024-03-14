@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "NTHealthComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, bool, GetAbility);
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, bool);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentHealthChangedSignature, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
@@ -16,8 +16,7 @@ class NOVAETERRAE_API UNTHealthComponent : public UActorComponent
 
 public:
     UNTHealthComponent();
-    
-    UPROPERTY(BlueprintAssignable);
+
     FOnDeathSignature OnDeath;
     FOnCurrentHealthChangedSignature OnCurrentHealthChanged;
 
@@ -41,9 +40,6 @@ protected:
     UFUNCTION(BlueprintCallable)
     virtual void OnTakeAnyDamage(
         AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
-
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    virtual void RestoreFullHealth();
 
 private:
     float CurrentHealth = 0.0f;
