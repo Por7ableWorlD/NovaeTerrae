@@ -70,6 +70,7 @@ void UNTCompanionHealthComponent::HealUpdate()
     if (FMath::IsNearlyEqual(GetCurrentHealth(), MaxHealth) && GetWorld())
     {
         GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
+        OnRegenerationFinished.Broadcast();
         UE_LOG(LogCompanionHealthComponent, Display, TEXT("Auto heal stoped. Healed Max. CurrentHealth = %.0f"), GetCurrentHealth());
     }
 }

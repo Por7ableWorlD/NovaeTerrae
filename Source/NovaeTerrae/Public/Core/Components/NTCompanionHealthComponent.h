@@ -6,6 +6,8 @@
 #include "Core/Components/NTHealthComponent.h"
 #include "NTCompanionHealthComponent.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRegenerationFinished);
+
 UCLASS()
 class NOVAETERRAE_API UNTCompanionHealthComponent : public UNTHealthComponent
 {
@@ -15,6 +17,9 @@ public:
     UNTCompanionHealthComponent();
 
     bool CheckHealthThreshold(float SkillThreshold);
+
+    UPROPERTY(BlueprintAssignable);
+    FOnRegenerationFinished OnRegenerationFinished;
 
 protected:
     virtual void BeginPlay() override;
