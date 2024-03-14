@@ -42,6 +42,9 @@ protected:
     virtual void OnTakeAnyDamage(
         AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    virtual void RestoreFullHealth();
+
 private:
     float CurrentHealth = 0.0f;
 };

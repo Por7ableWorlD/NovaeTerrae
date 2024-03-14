@@ -48,8 +48,7 @@ protected:
     virtual void OnTakeAnyDamage(
         AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) override;
 
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    void RestoreFullHealth();
+    virtual void RestoreFullHealth() override;
 
 private:
     bool SetDefaultMaxHealthUsed = false;
