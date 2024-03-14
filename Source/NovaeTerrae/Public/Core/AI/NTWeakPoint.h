@@ -7,6 +7,7 @@
 #include "NTWeakPoint.generated.h"
 
 class UNTEnemyHealthComponent;
+class UNiagaraSystem;
 
 UCLASS()
 class NOVAETERRAE_API ANTWeakPoint : public AActor
@@ -22,15 +23,21 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTEnemyHealthComponent* HealthComponent;
 
+	UPROPERTY(EditAnywhere, Category = "VFX")
+    UNiagaraSystem* DeathEffect;
+
 protected:
 	virtual void BeginPlay() override;
 
     UFUNCTION(BlueprintCallable, Category = "WeakPoint")
-    void SetParameters(ACharacter* WeilderRef, float DeathAdditionalDamage);
+    void SetParameters(float WeakPointHealth, float DamageResistance, float DeathAdditionalDamage);
+
+	UFUNCTION()
+    void OnDeath(bool GetAbility = false);
 
 private:
     void TransferDamage(float Damage);
 
 	float AdditionalDamage = 10.0f;
-    ACharacter* OwnerRef;
+    AActor* OwnerRef;
 };

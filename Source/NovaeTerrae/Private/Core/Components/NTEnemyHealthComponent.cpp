@@ -40,13 +40,13 @@ void UNTEnemyHealthComponent::OnTakeAnyDamage(
     if (DamageCauser->IsA<ANTBaseCharacter>())
     {
         float FinalDamage = Damage * (1 - (DamageResistancePercentage / 100));
-        OnTakeDamageFromPlayer.Broadcast(FinalDamage);
+        OnTakeDamageFromPlayer.Broadcast(FMath::Clamp(FinalDamage, 0.0f, GetCurrentHealth()));
         Super::OnTakeAnyDamage(DamagedActor, FinalDamage, DamageType, InstigatedBy, DamageCauser);
     }
 
     if (DamageCauser->IsA<ANTWeakPoint>())
     {
-        OnTakeDamageFromPlayer.Broadcast(Damage);
+        OnTakeDamageFromPlayer.Broadcast(FMath::Clamp(Damage, 0.0f, GetCurrentHealth()));
         Super::OnTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
     }
 

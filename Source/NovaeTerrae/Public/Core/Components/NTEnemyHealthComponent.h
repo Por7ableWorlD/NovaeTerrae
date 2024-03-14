@@ -38,15 +38,15 @@ public:
 
     void CheckActionThreshold();
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetDefaultMaxHealth(float NewMaxHealth);
+
     FGameplayTagContainer GameTags;
 
 protected:
     virtual void BeginPlay() override;
     virtual void OnTakeAnyDamage(
         AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) override;
-
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    void SetDefaultMaxHealth(float NewMaxHealth);
 
     UFUNCTION(BlueprintCallable, Category = "Health")
     void RestoreFullHealth();

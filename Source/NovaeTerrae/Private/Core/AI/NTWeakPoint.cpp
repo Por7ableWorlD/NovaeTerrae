@@ -5,6 +5,8 @@
 #include "Core/Components/NTEnemyHealthComponent.h"
 #include "GameFramework/Character.h"
 #include <Kismet/GameplayStatics.h>
+#include "NiagaraFunctionLibrary.h"
+#include "NiagaraComponent.h"
 #include "Core/Dev/Damage/NTDevBaseDamageType.h"
 
 
@@ -23,13 +25,40 @@ void ANTWeakPoint::BeginPlay()
 	Super::BeginPlay();
 
 	HealthComponent->OnTakeDamageFromPlayer.AddUObject(this, &ANTWeakPoint::TransferDamage);
+    HealthComponent->OnDeath.AddDynamic(this, &ANTWeakPoint::OnDeath);
     HealthComponent->EnableActionThreshold = false;
+
+	if (!IsChildActor())
+	{
+        return;
+	}
+
+	OwnerRef = GetParentActor();
 }
 
-void ANTWeakPoint::SetParameters(ACharacter* WeilderRef, float DeathAdditionalDamage) 
+void ANTWeakPoint::SetParameters(float WeakPointHealth, float DamageResistance, float DeathAdditionalDamage)
 {
-    OwnerRef = WeilderRef;
+    HealthComponent->SetDefaultMaxHealth(WeakPointHealth);
     AdditionalDamage = DeathAdditionalDamage;
+    HealthComponent->DamageResistancePercentage = DamageResistance; 
+}
+
+void ANTWeakPoint::OnDeath(bool GetAbility) 
+{
+    if (OwnerRef)
+    {
+        UGameplayStatics::ApplyDamage(OwnerRef, AdditionalDamage, nullptr, this, TSubclassOf<UNTDevBaseDamageType>());
+    }
+
+	if (DeathEffect)
+    {
+        FTransform Transform = GetActorTransform();
+        UNiagaraFunctionLibrary::SpawnSystemAtLocation(
+            GetWorld(), DeathEffect, Transform.GetLocation(), Transform.Rotator(), Transform.GetScale3D());
+    }
+
+    Destroy();
+    
 }
 
 void ANTWeakPoint::TransferDamage(float Damage) 
@@ -38,11 +67,6 @@ void ANTWeakPoint::TransferDamage(float Damage)
 	{
         return;
 	}
-
-    if (HealthComponent->IsDead())
-    {
-        Damage += AdditionalDamage;
-    }
 
 	UGameplayStatics::ApplyDamage(OwnerRef, Damage, nullptr, this, TSubclassOf<UNTDevBaseDamageType>());
 }
