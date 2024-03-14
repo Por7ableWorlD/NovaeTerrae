@@ -7,6 +7,7 @@
 #include "GameplayTagContainer.h"
 #include "NTEnemyHealthComponent.generated.h"
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnTakeDamageFromPlayer, float);
 DECLARE_MULTICAST_DELEGATE(FOnActionThresholdReached);
 
 class AAIController;
@@ -20,16 +21,25 @@ public:
     UNTEnemyHealthComponent();
 
     FOnActionThresholdReached OnActionThresholdReached;
-
-    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior", meta = (ClampMin = "0.1", ClampMax = "100.0"))
-    float ActionThresholdPercentage = 25.0f;
+    FOnTakeDamageFromPlayer OnTakeDamageFromPlayer;
 
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior")
     bool EnableActionThreshold = true;
 
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior",
+        meta = (EditCondition = "EnableActionThreshold", ClampMin = "0.1", ClampMax = "100.0"))
+    float ActionThresholdPercentage = 25.0f;
+
+    UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior",
+        meta = (ClampMin = "0.0", ClampMax = "100.0"))
+    float DamageResistancePercentage = 0.0f;
+
     void OnTakeDamageFromEnemy(AAIController* AIController);
 
     void CheckActionThreshold();
+
+    UFUNCTION(BlueprintCallable, Category = "Health")
+    void SetDefaultMaxHealth(float NewMaxHealth);
 
     FGameplayTagContainer GameTags;
 
@@ -38,11 +48,7 @@ protected:
     virtual void OnTakeAnyDamage(
         AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser) override;
 
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    void SetDefaultMaxHealth(float NewMaxHealth);
-
-    UFUNCTION(BlueprintCallable, Category = "Health")
-    void RestoreFullHealth();
+    virtual void RestoreFullHealth() override;
 
 private:
     bool SetDefaultMaxHealthUsed = false;
