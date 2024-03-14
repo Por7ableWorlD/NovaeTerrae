@@ -236,7 +236,7 @@ void ANTBaseCharacter::OnThirstRemove()
 
     ThirstComponent->SetThirst(0);
     GameTags.RemoveTag(FStatusGameplayTags::Get().Thirst);
-    UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, Companion, nullptr);
+    OnThirstRemoveSignature.Broadcast();
 }
 
 void ANTBaseCharacter::OnSacrifice() 

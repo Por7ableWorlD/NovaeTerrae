@@ -16,6 +16,7 @@ class UTextRenderComponent;
 class ANTCompanionCharacter;
 
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnResetDeathSignature);
+DECLARE_MULTICAST_DELEGATE(FOnThirstRemoveSignature);
 DECLARE_MULTICAST_DELEGATE(FOnSacrificeRequestSignature);
 DECLARE_MULTICAST_DELEGATE(FOnFastReloadRequestSignature);
 DECLARE_MULTICAST_DELEGATE(FOnScanRequestSignature);
@@ -40,6 +41,8 @@ public:
 
     UPROPERTY(BlueprintAssignable);
     FOnDDeathSignature OnPlayerDeathSignature;
+
+    FOnThirstRemoveSignature OnThirstRemoveSignature;
 
     FOnSacrificeRequestSignature OnSacrificeRequestSignature;
 

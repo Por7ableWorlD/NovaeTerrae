@@ -47,6 +47,9 @@ protected:
 
     void OnCurrentHealthChanged(float CurrentHealth);
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills")
+    float ThirstRemoveHealthCost = 30.0f;
+
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "120.0"))
     float SacrificeCooldown = 0.0f;
 
@@ -81,6 +84,7 @@ private:
     FTimerHandle FastReloadReseter;
     FTimerHandle FastReloadTimerHandle;
 
+    void OnThirstRemoveRequest();
     void OnSacrificeRequest();
     void OnFastReloadRequest();
     void OnScanRequest();
