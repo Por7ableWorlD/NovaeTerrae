@@ -14,7 +14,7 @@ class UTextRenderComponent;
 
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSacrificeStart, float);
 DECLARE_MULTICAST_DELEGATE(FOnFastReloadStart);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFastReloadEnd);
+DECLARE_MULTICAST_DELEGATE(FOnFastReloadEnd);
 
 UCLASS()
 class NOVAETERRAE_API ANTCompanionCharacter : public ACharacter
@@ -40,13 +40,15 @@ public:
 
     FOnFastReloadStart OnFastReloadStart;
 
-    UPROPERTY(BlueprintAssignable);
     FOnFastReloadEnd OnFastReloadEnd;
 
 protected:
     virtual void BeginPlay() override;
 
     void OnCurrentHealthChanged(float CurrentHealth);
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills")
+    float ThirstRemoveHealthCost = 30.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "120.0"))
     float SacrificeCooldown = 0.0f;
@@ -82,6 +84,7 @@ private:
     FTimerHandle FastReloadReseter;
     FTimerHandle FastReloadTimerHandle;
 
+    void OnThirstRemoveRequest();
     void OnSacrificeRequest();
     void OnFastReloadRequest();
     void OnScanRequest();

@@ -67,7 +67,7 @@ void ANTBaseCharacter::BeginPlay()
 
     OnCurrentHealthChanged(HealthComponentPrivet->GetCurrentHealth());
     HealthComponentPrivet->OnCurrentHealthChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentHealthChanged);
-    HealthComponentPrivet->OnDeath.AddUObject(this, &ANTBaseCharacter::OnDeath);
+    HealthComponentPrivet->OnDeath.AddDynamic(this, &ANTBaseCharacter::OnDeath);
 
     OnCurrentThirstChanged(ThirstComponent->GetCurrentThirst());
     ThirstComponent->OnCurrentThirstChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentThirstChanged);
@@ -82,6 +82,8 @@ void ANTBaseCharacter::BeginPlay()
     }
 
     Companion->OnSacrificeStart.AddUObject(this, &ANTBaseCharacter::SacrificingHeal);
+    Companion->OnFastReloadStart.AddUObject(this, &ANTBaseCharacter::OnFastReloadEnable);
+    Companion->OnFastReloadEnd.AddUObject(this, &ANTBaseCharacter::OnFastReloadDisable);
 }
 
 void ANTBaseCharacter::Tick(float DeltaTime)
@@ -234,7 +236,7 @@ void ANTBaseCharacter::OnThirstRemove()
 
     ThirstComponent->SetThirst(0);
     GameTags.RemoveTag(FStatusGameplayTags::Get().Thirst);
-    UGameplayStatics::ApplyDamage(Companion, 25.0f, Controller, Companion, nullptr);
+    OnThirstRemoveSignature.Broadcast();
 }
 
 void ANTBaseCharacter::OnSacrifice() 
@@ -263,11 +265,21 @@ void ANTBaseCharacter::OnFastReload()
     OnFastReloadRequestSignature.Broadcast();
 }
 
+void ANTBaseCharacter::OnFastReloadEnable() 
+{
+    IsFastReloadEnabled = true;
+}
+
+void ANTBaseCharacter::OnFastReloadDisable() 
+{
+    IsFastReloadEnabled = false;
+}
+
 void ANTBaseCharacter::OnResetDeath()
 {
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
     EnableInput(PlayerController);
-    OnResetDeathSignature.Broadcast();
+    OnResetPlayerDeathSignature.Broadcast();
     HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetMaxHealth());
 
     AActor* PlayerStart = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass());
@@ -318,7 +330,7 @@ void ANTBaseCharacter::OnDeath(bool IsLazer)
 
     //SetLifeSpan(LifeSpanOnDeath);
 
-    OnDeathSignature.Broadcast(IsLazer);
+    OnPlayerDeathSignature.Broadcast(IsLazer);
 
     UE_LOG(LogBaseCharacter, Display, TEXT("OnDeath event. Play montage Death"));
 }
