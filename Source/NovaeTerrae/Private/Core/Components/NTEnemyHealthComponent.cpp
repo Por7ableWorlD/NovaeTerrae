@@ -54,7 +54,10 @@ void UNTEnemyHealthComponent::OnTakeAnyDamage(
 
 void UNTEnemyHealthComponent::OnTakeDamageFromEnemy(AAIController* AIController) 
 {
-    check(AIController);
+    if (!AIController)
+    {
+        return;
+    }
 
     AIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
     AIController->GetBlackboardComponent()->SetValueAsBool(FName("AgressiveState"), true);

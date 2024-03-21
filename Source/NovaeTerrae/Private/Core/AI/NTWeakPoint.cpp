@@ -40,7 +40,7 @@ void ANTWeakPoint::SetParameters(float WeakPointHealth, float DamageResistance, 
 {
     HealthComponent->SetDefaultMaxHealth(WeakPointHealth);
     AdditionalDamage = DeathAdditionalDamage;
-    HealthComponent->DamageResistancePercentage = DamageResistance; 
+    HealthComponent->SetDamageResistancePercentage(DamageResistance);
 }
 
 void ANTWeakPoint::OnDeath(bool GetAbility) 
