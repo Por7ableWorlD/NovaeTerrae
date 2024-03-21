@@ -10,7 +10,7 @@ DEFINE_LOG_CATEGORY_STATIC(LogCompanionHealthComponent, All, All)
 
 UNTCompanionHealthComponent::UNTCompanionHealthComponent() {}
 
-bool UNTCompanionHealthComponent::CheckHealthThreshold(float SkillThreshold)
+bool UNTCompanionHealthComponent::CheckHealthThreshold(float SkillThreshold) const
 {
     float HealthThresholdValue = SkillThreshold / 100 * MaxHealth;
 
@@ -22,11 +22,6 @@ bool UNTCompanionHealthComponent::CheckHealthThreshold(float SkillThreshold)
     return false;
 }
 
-void UNTCompanionHealthComponent::BeginPlay()
-{
-    Super::BeginPlay();
-}
-
 void UNTCompanionHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
 {
     if (SetDefaultMaxHealthUsed)
@@ -36,6 +31,7 @@ void UNTCompanionHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
 
     MaxHealth = NewMaxHealth;
     SetDefaultMaxHealthUsed = true;
+    RestoreFullHealth();
 }
 
 void UNTCompanionHealthComponent::OnTakeAnyDamage(

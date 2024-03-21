@@ -6,7 +6,7 @@
 #include "Core/Components/NTHealthComponent.h"
 #include "NTCompanionHealthComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnRegenerationFinished);
+DECLARE_MULTICAST_DELEGATE(FOnRegenerationFinished);
 
 UCLASS()
 class NOVAETERRAE_API UNTCompanionHealthComponent : public UNTHealthComponent
@@ -16,13 +16,11 @@ class NOVAETERRAE_API UNTCompanionHealthComponent : public UNTHealthComponent
 public:
     UNTCompanionHealthComponent();
 
-    bool CheckHealthThreshold(float SkillThreshold);
+    bool CheckHealthThreshold(float SkillThreshold) const;
 
-    UPROPERTY(BlueprintAssignable);
     FOnRegenerationFinished OnRegenerationFinished;
 
 protected:
-    virtual void BeginPlay() override;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Heal")
     bool AutoHeal = true;

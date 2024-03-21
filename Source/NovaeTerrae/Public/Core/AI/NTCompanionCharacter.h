@@ -28,9 +28,6 @@ public:
     UStaticMeshComponent* StaticMeshComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UC3_LAA_MainComponent* LAAComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTCompanionHealthComponent* CompanionHealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -92,4 +89,8 @@ private:
     void OnSacrificeReset();
     void OnFastReloadReset();
     void OnScanReset();
+
+    UFUNCTION()
+    void DisableActions(bool GetAbility);
+    void EnableActions() const;
 };
