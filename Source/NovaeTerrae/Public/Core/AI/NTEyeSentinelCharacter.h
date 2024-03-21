@@ -6,7 +6,6 @@
 #include "GameFramework/Character.h"
 #include "NTEyeSentinelCharacter.generated.h"
 
-class UStaticMeshComponent;
 class UNTEnemyHealthComponent;
 class USplineComponent;
 class UNiagaraSystem;
@@ -36,6 +35,6 @@ protected:
     UFUNCTION()
     void OnDeath(bool GetAbility = false);
 
-    void OnStrafeEnable();
+    void OnStrafeEnable() const;
 
 };

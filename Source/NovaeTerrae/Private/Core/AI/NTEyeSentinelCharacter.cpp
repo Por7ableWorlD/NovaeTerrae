@@ -3,7 +3,6 @@
 
 #include "Core/AI/NTEyeSentinelCharacter.h"
 #include "Core/Components/NTEnemyHealthComponent.h"
-#include "Components/StaticMeshComponent.h"
 #include "Engine/World.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "TimerManager.h"
@@ -66,7 +65,7 @@ void ANTEyeSentinelCharacter::OnDeath(bool GetAbility)
     Destroy();
 }
 
-void ANTEyeSentinelCharacter::OnStrafeEnable()
+void ANTEyeSentinelCharacter::OnStrafeEnable() const
 {
     AAIController* AIController = GetController<AAIController>();
 

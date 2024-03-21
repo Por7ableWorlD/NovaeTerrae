@@ -1,7 +1,6 @@
 // NOVAE TERRAE. All Rights Reserved.
 
 #include "Core/AI/NTCompanionCharacter.h"
-#include <C3_LAA_MainComponent.h>
 #include <Components/SphereComponent.h>
 #include "Core/Characters/NTBaseCharacter.h"
 #include <Kismet/GameplayStatics.h>
@@ -23,8 +22,6 @@ ANTCompanionCharacter::ANTCompanionCharacter()
     HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
     HealthTextComponent->SetupAttachment(GetRootComponent());
 
-    LAAComponent = CreateDefaultSubobject<UC3_LAA_MainComponent>("LAAComponent");
-
     CompanionHealthComponent = CreateDefaultSubobject<UNTCompanionHealthComponent>("CompanionHealthComponent");
 }
 
@@ -32,12 +29,13 @@ void ANTCompanionCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    check(LAAComponent);
     check(CompanionHealthComponent);
     check(HealthTextComponent);
 
     OnCurrentHealthChanged(CompanionHealthComponent->GetCurrentHealth());
     CompanionHealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTCompanionCharacter::OnCurrentHealthChanged);
+    CompanionHealthComponent->OnRegenerationFinished.AddUObject(this, &ANTCompanionCharacter::EnableActions);
+    CompanionHealthComponent->OnDeath.AddDynamic(this, &ANTCompanionCharacter::DisableActions);
 
     ANTBaseCharacter* Player = Cast<ANTBaseCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
@@ -51,9 +49,14 @@ void ANTCompanionCharacter::BeginPlay()
     Player->OnFastReloadRequestSignature.AddUObject(this, &ANTCompanionCharacter::OnFastReloadRequest);
     Player->OnScanRequestSignature.AddUObject(this, &ANTCompanionCharacter::OnScanRequest);
 
-    LAAComponent->SetViewTargetActor(Player);
-    LAAComponent->SetDestinationOffset(FVector(0.0f, 0.0f, 50.0f));
-    LAAComponent->SetEnable(false);
+    AAIController* AIController = GetController<AAIController>();
+
+    if (!AIController)
+    {
+        return;
+    }
+
+    AIController->GetBlackboardComponent()->SetValueAsObject(FName("Player"), Player);
 }
 
 void ANTCompanionCharacter::OnCurrentHealthChanged(float CurrentHealth)
@@ -194,4 +197,29 @@ void ANTCompanionCharacter::OnScanReset()
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Blue, TEXT("ScanCooldownReset"));
     CanScan = true;
     GetWorld()->GetTimerManager().ClearTimer(ScanReseter);
+}
+
+void ANTCompanionCharacter::DisableActions(bool GetAbility) 
+{
+    AAIController* AIController = GetController<AAIController>();
+
+
+    if (!AIController)
+    {
+        return;
+    }
+
+    AIController->GetBlackboardComponent()->SetValueAsBool(FName("Regenerating"), true);
+}
+
+void ANTCompanionCharacter::EnableActions() const 
+{
+    AAIController* AIController = GetController<AAIController>();
+
+    if (!AIController)
+    {
+        return;
+    }
+
+    AIController->GetBlackboardComponent()->SetValueAsBool(FName("Regenerating"), false);
 }

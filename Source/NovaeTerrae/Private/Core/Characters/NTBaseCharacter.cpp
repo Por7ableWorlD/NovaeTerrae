@@ -117,7 +117,6 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     if (PlayerInput)
     {
         PlayerInput->BindAction(MoveAction, ETriggerEvent::Triggered, this, &ANTBaseCharacter::Movement);
-        PlayerInput->BindAction(MoveAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopMovement);
 
         PlayerInput->BindAction(LookAction, ETriggerEvent::Triggered, this, &ANTBaseCharacter::Look);
 
@@ -147,8 +146,6 @@ void ANTBaseCharacter::Movement(const FInputActionValue& InputValue)
         return;
     }
 
-    bIsMovingForward = InputVector.Y > 0.0f;
-
     // find out which way is forward
     const FRotator Rotation = Controller->GetControlRotation();
     const FRotator YawRotation(0, Rotation.Yaw, 0);
@@ -161,11 +158,6 @@ void ANTBaseCharacter::Movement(const FInputActionValue& InputValue)
 
     AddMovementInput(ForwardDirection, InputVector.Y);
     AddMovementInput(RightDirection, InputVector.X);
-}
-
-void ANTBaseCharacter::OnStopMovement()
-{
-    bIsMovingForward = false;
 }
 
 void ANTBaseCharacter::Look(const FInputActionValue& InputValue)
@@ -302,7 +294,7 @@ void ANTBaseCharacter::OnResetDeath()
 
 bool ANTBaseCharacter::IsRunning() const
 {
-    return bWantsToRun && bIsMovingForward && !GetVelocity().IsZero();
+    return bWantsToRun && !GetVelocity().IsZero();
 }
 
 void ANTBaseCharacter::OnCurrentHealthChanged(float CurrentHealth)
