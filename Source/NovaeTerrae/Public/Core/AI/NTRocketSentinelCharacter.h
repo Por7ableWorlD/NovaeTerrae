@@ -28,7 +28,7 @@ public:
     UNiagaraSystem* DeathEffect;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Behavior")
-    float ShieldDuration;
+    float ShieldDuration = 5.0f;
 
 protected:
     FTimerHandle ShieldTimerHandle;

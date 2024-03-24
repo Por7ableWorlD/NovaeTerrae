@@ -6,6 +6,8 @@
 #include "GameFramework/Actor.h"
 #include "NTWeakPoint.generated.h"
 
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnWeakPointDestroyed);
+
 class UNTEnemyHealthComponent;
 class UNiagaraSystem;
 
@@ -16,6 +18,9 @@ class NOVAETERRAE_API ANTWeakPoint : public AActor
 	
 public:	
 	ANTWeakPoint();
+
+	UPROPERTY(BlueprintAssignable);
+    FOnWeakPointDestroyed OnWeakPointDestroyed;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UStaticMeshComponent* StaticMeshComponent;

@@ -45,6 +45,8 @@ void ANTWeakPoint::SetParameters(float WeakPointHealth, float DamageResistance, 
 
 void ANTWeakPoint::OnDeath(bool GetAbility) 
 {
+    OnWeakPointDestroyed.Broadcast();
+    
     if (OwnerRef)
     {
         UGameplayStatics::ApplyDamage(OwnerRef, AdditionalDamage, nullptr, this, TSubclassOf<UNTDevBaseDamageType>());
