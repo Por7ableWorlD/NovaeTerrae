@@ -92,5 +92,5 @@ private:
 
     UFUNCTION()
     void DisableActions(bool GetAbility);
-    void EnableActions() const;
+    void EnableActions();
 };

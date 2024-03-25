@@ -96,7 +96,7 @@ void UNTEnemyHealthComponent::CheckActionThreshold()
     ThresholdValue = NewThreshold;
     ++ThresholdNumber;
 
-    UE_LOG(LogEnemyHealthComponent, Display, TEXT("[DEBUG] Old Threshold: %.0f"), ThresholdValue);
+    UE_LOG(LogEnemyHealthComponent, Display, TEXT("[DEBUG] New Threshold: %.0f"), ThresholdValue);
 }
 
 void UNTEnemyHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)

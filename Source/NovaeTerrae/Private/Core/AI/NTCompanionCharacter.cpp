@@ -201,6 +201,14 @@ void ANTCompanionCharacter::OnScanReset()
 
 void ANTCompanionCharacter::DisableActions(bool GetAbility) 
 {
+    GetWorld()->GetTimerManager().ClearTimer(SacrificeReseter);
+    GetWorld()->GetTimerManager().ClearTimer(FastReloadReseter);
+    GetWorld()->GetTimerManager().ClearTimer(ScanReseter);
+
+    CanSacrifice = false;
+    CanFastReload = false;
+    CanScan = false;
+
     AAIController* AIController = GetController<AAIController>();
 
 
@@ -212,8 +220,12 @@ void ANTCompanionCharacter::DisableActions(bool GetAbility)
     AIController->GetBlackboardComponent()->SetValueAsBool(FName("Regenerating"), true);
 }
 
-void ANTCompanionCharacter::EnableActions() const 
+void ANTCompanionCharacter::EnableActions() 
 {
+    CanSacrifice = true;
+    CanFastReload = true;
+    CanScan = true;
+
     AAIController* AIController = GetController<AAIController>();
 
     if (!AIController)
