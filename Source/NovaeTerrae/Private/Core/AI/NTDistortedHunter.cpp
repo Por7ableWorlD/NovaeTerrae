@@ -42,7 +42,7 @@ void ANTDistortedHunter::EnableAgressiveMode(float Damage)
     HealthComponent->OnTakeDamageFromEnemy(AIController);
 }
 
-void ANTDistortedHunter::OnDeath(bool GetAbility)
+void ANTDistortedHunter::OnDeath(AActor* DeathCauser)
 {
     AAIController* AIController = GetController<AAIController>();
 

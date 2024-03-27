@@ -48,7 +48,7 @@ void UNTCompanionHealthComponent::OnTakeAnyDamage(
 
     if (IsDead())
     {
-        OnDeath.Broadcast(false);
+        OnDeath.Broadcast(DamageCauser);
         UE_LOG(LogCompanionHealthComponent, Display, TEXT("Death\nLast damage: %.0f"), Damage);
     }
 

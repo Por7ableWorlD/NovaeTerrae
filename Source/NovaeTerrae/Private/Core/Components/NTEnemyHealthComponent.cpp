@@ -27,7 +27,7 @@ void UNTEnemyHealthComponent::BeginPlay()
 void UNTEnemyHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (!DamageCauser || (!DamageCauser->IsA<ANTBaseCharacter>() && !DamageCauser->IsA<ANTWeakPoint>()))
+    if (!DamageCauser)
     {
         return;
     }
@@ -35,20 +35,18 @@ void UNTEnemyHealthComponent::OnTakeAnyDamage(
     if (GameTags.HasTag(FStatusGameplayTags::Get().Invulnerability))
     {
         return;
-    } 
-
-    if (DamageCauser->IsA<ANTBaseCharacter>())
-    {
-        float FinalDamage = Damage * (1 - (DamageResistancePercentage / 100));
-        OnTakeDamageFromPlayer.Broadcast(FMath::Clamp(FinalDamage, 0.0f, GetCurrentHealth()));
-        Super::OnTakeAnyDamage(DamagedActor, FinalDamage, DamageType, InstigatedBy, DamageCauser);
     }
 
     if (DamageCauser->IsA<ANTWeakPoint>())
     {
         OnTakeDamageFromPlayer.Broadcast(FMath::Clamp(Damage, 0.0f, GetCurrentHealth()));
         Super::OnTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+        return;
     }
+
+    float FinalDamage = Damage * (1 - (DamageResistancePercentage / 100));
+    OnTakeDamageFromPlayer.Broadcast(FMath::Clamp(FinalDamage, 0.0f, GetCurrentHealth()));
+    Super::OnTakeAnyDamage(DamagedActor, FinalDamage, DamageType, InstigatedBy, DamageCauser);
 
 }
 

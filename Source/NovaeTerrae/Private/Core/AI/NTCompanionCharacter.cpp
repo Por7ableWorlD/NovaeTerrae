@@ -199,7 +199,7 @@ void ANTCompanionCharacter::OnScanReset()
     GetWorld()->GetTimerManager().ClearTimer(ScanReseter);
 }
 
-void ANTCompanionCharacter::DisableActions(bool GetAbility) 
+void ANTCompanionCharacter::DisableActions(AActor* DeathCauser)
 {
     GetWorld()->GetTimerManager().ClearTimer(SacrificeReseter);
     GetWorld()->GetTimerManager().ClearTimer(FastReloadReseter);

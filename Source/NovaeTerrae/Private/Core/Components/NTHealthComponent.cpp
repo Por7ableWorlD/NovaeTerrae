@@ -41,28 +41,8 @@ void UNTHealthComponent::OnTakeAnyDamage(
 
     if (IsDead())
     {
-        if (DamageType->IsA<ULazerDamageType>())
-        {
-            OnDeath.Broadcast(true);
-        }
-        else
-        {
-            OnDeath.Broadcast(false);
-        }
+        OnDeath.Broadcast(DamageCauser);
         UE_LOG(LogHealthComponent, Display, TEXT("Death\nLast damage: %.0f"), Damage);
-    }
-
-    // Print For Debug Damage Type
-    if (DamageType)
-    {
-        if (DamageType->IsA<UNTDevBaseDamageType>())
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Red, "DevBaseDamage");
-        }
-        else
-        {
-            GEngine->AddOnScreenDebugMessage(-1, 0.0f, FColor::Green, "None");
-        }
     }
 }
 

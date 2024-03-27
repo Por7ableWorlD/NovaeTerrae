@@ -43,7 +43,7 @@ void ANTWeakPoint::SetParameters(float WeakPointHealth, float DamageResistance, 
     HealthComponent->SetDamageResistancePercentage(DamageResistance);
 }
 
-void ANTWeakPoint::OnDeath(bool GetAbility) 
+void ANTWeakPoint::OnDeath(AActor* DeathCauser)
 {
     OnWeakPointDestroyed.Broadcast();
     

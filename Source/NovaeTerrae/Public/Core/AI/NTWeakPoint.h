@@ -38,7 +38,7 @@ protected:
     void SetParameters(float WeakPointHealth, float DamageResistance, float DeathAdditionalDamage);
 
 	UFUNCTION()
-    void OnDeath(bool GetAbility = false);
+    void OnDeath(AActor* DeathCauser);
 
 private:
     void TransferDamage(float Damage);

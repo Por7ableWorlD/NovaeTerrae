@@ -54,7 +54,7 @@ void ANTRocketSentinelCharacter::EnableAgressiveMode(float Damage)
     HealthComponent->OnTakeDamageFromEnemy(AIController);
 }
 
-void ANTRocketSentinelCharacter::OnDeath(bool GetAbility)
+void ANTRocketSentinelCharacter::OnDeath(AActor* DeathCauser)
 {
     if (DeathEffect)
     {

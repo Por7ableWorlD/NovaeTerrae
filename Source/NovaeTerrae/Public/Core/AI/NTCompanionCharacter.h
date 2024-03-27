@@ -91,6 +91,6 @@ private:
     void OnScanReset();
 
     UFUNCTION()
-    void DisableActions(bool GetAbility);
+    void DisableActions(AActor* DeathCauser);
     void EnableActions();
 };

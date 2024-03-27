@@ -301,7 +301,7 @@ bool ANTBaseCharacter::IsRunning() const
 
 void ANTBaseCharacter::OnCurrentHealthChanged(float CurrentHealth)
 {
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
+    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), FMath::CeilToFloat(CurrentHealth))));
 }
 
 void ANTBaseCharacter::OnCurrentThirstChanged(float CurrentThirst)
@@ -309,13 +309,13 @@ void ANTBaseCharacter::OnCurrentThirstChanged(float CurrentThirst)
     ThirstTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentThirst)));
 }
 
-void ANTBaseCharacter::OnDeath(bool IsLaser)
+void ANTBaseCharacter::OnDeath(AActor* DeathCauser)
 {
     ThirstComponent->SetThirst(ThirstComponent->GetCurrentThirst() + 1);
 
     if (!GameTags.HasTagExact(FStatusGameplayTags::Get().Thirst))
     {
-        PlayDeathAnimation(IsLaser, false);
+        PlayDeathAnimation(DeathCauser, false);
         return;
     }
 
@@ -323,14 +323,14 @@ void ANTBaseCharacter::OnDeath(bool IsLaser)
         DeathTimer, [&] {
             if (GameTags.HasTagExact(FStatusGameplayTags::Get().Thirst))
             {
-                PlayDeathAnimation(IsLaser, true);
+                PlayDeathAnimation(DeathCauser, true);
             }
         },
         ThirstComponent->GetThirstDuration(), false);
     
 }
 
-void ANTBaseCharacter::PlayDeathAnimation(bool IsLaser, bool ResetThirst)
+void ANTBaseCharacter::PlayDeathAnimation(AActor* DeathCauser, bool ResetThirst)
 {
     if (ResetThirst)
     {
@@ -349,7 +349,7 @@ void ANTBaseCharacter::PlayDeathAnimation(bool IsLaser, bool ResetThirst)
 
     // SetLifeSpan(LifeSpanOnDeath);
 
-    OnPlayerDeathSignature.Broadcast(IsLaser);
+    OnPlayerDeathSignature.Broadcast(DeathCauser);
 
     UE_LOG(LogBaseCharacter, Display, TEXT("OnDeath event. Play montage Death"));
 }

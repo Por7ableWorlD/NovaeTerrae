@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "Core/AI/NTBaseEnemyCharacter.h"
 #include "NTRocketSentinelCharacter.generated.h"
 
 class UStaticMeshComponent;
@@ -11,7 +12,7 @@ class UNTEnemyHealthComponent;
 class UNiagaraSystem;
 
 UCLASS()
-class NOVAETERRAE_API ANTRocketSentinelCharacter : public ACharacter
+class NOVAETERRAE_API ANTRocketSentinelCharacter : public ANTBaseEnemyCharacter
 {
 	GENERATED_BODY()
 
@@ -38,7 +39,7 @@ protected:
     void EnableAgressiveMode(float Damage);
 
     UFUNCTION()
-    void OnDeath(bool GetAbility = false);
+    void OnDeath(AActor* DeathCauser);
 
     void OnShieldEnable();
 

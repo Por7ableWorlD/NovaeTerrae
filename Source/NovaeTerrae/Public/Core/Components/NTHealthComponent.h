@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "NTHealthComponent.generated.h"
 
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, bool, GetAbility);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDeathSignature, AActor*, DeathCauser);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentHealthChangedSignature, float);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))

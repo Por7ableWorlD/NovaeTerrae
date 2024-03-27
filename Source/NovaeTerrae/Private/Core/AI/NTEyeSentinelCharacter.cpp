@@ -55,7 +55,7 @@ void ANTEyeSentinelCharacter::EnableAgressiveMode(float Damage)
 
 }
 
-void ANTEyeSentinelCharacter::OnDeath(bool GetAbility)
+void ANTEyeSentinelCharacter::OnDeath(AActor* DeathCauser)
 {
     if (DeathEffect)
     {

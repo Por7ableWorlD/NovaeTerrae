@@ -20,7 +20,7 @@ DECLARE_MULTICAST_DELEGATE(FOnThirstRemoveSignature);
 DECLARE_MULTICAST_DELEGATE(FOnSacrificeRequestSignature);
 DECLARE_MULTICAST_DELEGATE(FOnFastReloadRequestSignature);
 DECLARE_MULTICAST_DELEGATE(FOnScanRequestSignature);
-DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDDeathSignature, bool, IsLazer);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDDeathSignature, AActor*, DeathCauser);
 
 UCLASS()
 class NOVAETERRAE_API ANTBaseCharacter : public ACharacter
@@ -165,9 +165,9 @@ private:
     void OnCurrentHealthChanged(float CurrentHealth);
 
     UFUNCTION()
-    void OnDeath(bool IsLaser);
+    void OnDeath(AActor* DeathCauser);
 
-    void PlayDeathAnimation(bool IsLaser, bool ResetThirst);
+    void PlayDeathAnimation(AActor* DeathCauser, bool ResetThirst);
 
     void OnCurrentThirstChanged(float CurrentThirst);
 
