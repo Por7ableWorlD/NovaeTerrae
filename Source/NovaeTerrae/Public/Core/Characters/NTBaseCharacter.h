@@ -50,6 +50,7 @@ public:
 
     FOnScanRequestSignature OnScanRequestSignature;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay Tags")
     FGameplayTagContainer GameTags;
 
 protected:
@@ -164,7 +165,9 @@ private:
     void OnCurrentHealthChanged(float CurrentHealth);
 
     UFUNCTION()
-    void OnDeath(bool IsLazer);
+    void OnDeath(bool IsLaser);
+
+    void PlayDeathAnimation(bool IsLaser, bool ResetThirst);
 
     void OnCurrentThirstChanged(float CurrentThirst);
 

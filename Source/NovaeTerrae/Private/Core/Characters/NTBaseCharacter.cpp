@@ -226,8 +226,9 @@ void ANTBaseCharacter::OnThirstRemove()
         return;
     }
 
-    ThirstComponent->SetThirst(0);
+    ThirstComponent->SetThirst(0.0f);
     GameTags.RemoveTag(FStatusGameplayTags::Get().Thirst);
+    HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetCurrentHealth() + 25.0f);
     OnThirstRemoveSignature.Broadcast();
 }
 
@@ -271,23 +272,24 @@ void ANTBaseCharacter::OnResetDeath()
 {
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
     EnableInput(PlayerController);
-    OnResetPlayerDeathSignature.Broadcast();
     HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetMaxHealth());
+    OnResetPlayerDeathSignature.Broadcast();
 
+    /*
     AActor* PlayerStart = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass());
     if (!PlayerStart)
     {
         UE_LOG(LogBaseCharacter, Warning, TEXT("[Warning] Can't find player's start object!"));
     }
 
-    this->TeleportTo(PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());  
+     this->TeleportTo(PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());  
 
     if (!Companion)
     {
         return;
     }
 
-    Companion->TeleportTo(PlayerStart->GetActorLocation() + FVector(100.0f, 0.0f, 0.0f), PlayerStart->GetActorRotation());
+    Companion->TeleportTo(PlayerStart->GetActorLocation() + FVector(100.0f, 0.0f, 0.0f), PlayerStart->GetActorRotation());*/
     
     
 }
@@ -307,22 +309,47 @@ void ANTBaseCharacter::OnCurrentThirstChanged(float CurrentThirst)
     ThirstTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentThirst)));
 }
 
-void ANTBaseCharacter::OnDeath(bool IsLazer)
+void ANTBaseCharacter::OnDeath(bool IsLaser)
 {
+    ThirstComponent->SetThirst(ThirstComponent->GetCurrentThirst() + 1);
+
+    if (!GameTags.HasTagExact(FStatusGameplayTags::Get().Thirst))
+    {
+        PlayDeathAnimation(IsLaser, false);
+        return;
+    }
+
+    GetWorld()->GetTimerManager().SetTimer(
+        DeathTimer, [&] {
+            if (GameTags.HasTagExact(FStatusGameplayTags::Get().Thirst))
+            {
+                PlayDeathAnimation(IsLaser, true);
+            }
+        },
+        ThirstComponent->GetThirstDuration(), false);
+    
+}
+
+void ANTBaseCharacter::PlayDeathAnimation(bool IsLaser, bool ResetThirst)
+{
+    if (ResetThirst)
+    {
+        ThirstComponent->SetThirst(0.0f);
+        GameTags.RemoveTag(FStatusGameplayTags::Get().Thirst);
+    }
+
     DeathAnimMontage->bEnableAutoBlendOut = true;
     PlayAnimMontage(DeathAnimMontage);
 
-    //GetCharacterMovement()->DisableMovement();
+    // GetCharacterMovement()->DisableMovement();
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
     DisableInput(PlayerController);
 
     GetWorld()->GetTimerManager().SetTimer(DeathTimer, this, &ANTBaseCharacter::OnResetDeath, 5, false);
 
-    ThirstComponent->SetThirst(FMath::Clamp(ThirstComponent->GetCurrentThirst() + 1, 0, ThirstComponent->MaxThirst));
+    // SetLifeSpan(LifeSpanOnDeath);
 
-    //SetLifeSpan(LifeSpanOnDeath);
-
-    OnPlayerDeathSignature.Broadcast(IsLazer);
+    OnPlayerDeathSignature.Broadcast(IsLaser);
 
     UE_LOG(LogBaseCharacter, Display, TEXT("OnDeath event. Play montage Death"));
 }

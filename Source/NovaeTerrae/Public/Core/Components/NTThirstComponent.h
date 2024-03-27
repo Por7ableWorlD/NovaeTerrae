@@ -18,15 +18,21 @@ public:
 
     FOnCurrentThirstChangedSignature OnCurrentThirstChanged;
 
+    UFUNCTION(BlueprintCallable, Category = "Thirst")
     float GetCurrentThirst() const { return CurrentThirst; }
 
+    UFUNCTION(BlueprintCallable, Category = "Thirst")
     void SetThirst(float NewThirst);
 
-    
+    float GetThirstDuration() const { return ThirstDuration; };
+
+protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Thirst", meta = (ClampMin = "1.0", ClampMax = "10.0"))
     float MaxThirst = 5.0f;
 
-protected:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "Thirst", meta = (ClampMin = "1.0", ClampMax = "60.0"))
+    float ThirstDuration = 10.0f;
+
     virtual void BeginPlay() override;
 
 
