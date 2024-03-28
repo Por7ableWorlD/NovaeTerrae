@@ -37,7 +37,7 @@ void UNTCompanionHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
 void UNTCompanionHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (Damage <= 0.0f || !GetWorld() || HealTimerHandle.IsValid() || IsDead() || !DamageCauser->IsA<ANTCompanionCharacter>())
+    if (Damage <= 0.0f || !GetWorld() || HealTimerHandle.IsValid() || IsDead() || !DamageCauser || !DamageCauser->IsA<ANTCompanionCharacter>())
     {
         return;
     }

@@ -274,24 +274,6 @@ void ANTBaseCharacter::OnResetDeath()
     EnableInput(PlayerController);
     HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetMaxHealth());
     OnResetPlayerDeathSignature.Broadcast();
-
-    /*
-    AActor* PlayerStart = UGameplayStatics::GetActorOfClass(GetWorld(), APlayerStart::StaticClass());
-    if (!PlayerStart)
-    {
-        UE_LOG(LogBaseCharacter, Warning, TEXT("[Warning] Can't find player's start object!"));
-    }
-
-     this->TeleportTo(PlayerStart->GetActorLocation(), PlayerStart->GetActorRotation());  
-
-    if (!Companion)
-    {
-        return;
-    }
-
-    Companion->TeleportTo(PlayerStart->GetActorLocation() + FVector(100.0f, 0.0f, 0.0f), PlayerStart->GetActorRotation());*/
-    
-    
 }
 
 bool ANTBaseCharacter::IsRunning() const
@@ -320,7 +302,7 @@ void ANTBaseCharacter::OnDeath(AActor* DeathCauser)
     }
 
     GetWorld()->GetTimerManager().SetTimer(
-        DeathTimer, [&] {
+        DeathTimer, [&, DeathCauser] {
             if (GameTags.HasTagExact(FStatusGameplayTags::Get().Thirst))
             {
                 PlayDeathAnimation(DeathCauser, true);
