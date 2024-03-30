@@ -6,6 +6,8 @@
 #include "GameFramework/Character.h"
 #include "NTBaseEnemyCharacter.generated.h"
 
+class UNTEnemyHealthComponent;
+
 UCLASS()
 class NOVAETERRAE_API ANTBaseEnemyCharacter : public ACharacter
 {
@@ -13,5 +15,8 @@ class NOVAETERRAE_API ANTBaseEnemyCharacter : public ACharacter
 
 public:
 	ANTBaseEnemyCharacter();
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
+    UNTEnemyHealthComponent* HealthComponent;
 
 };

@@ -7,7 +7,6 @@
 #include "Core/AI/NTBaseEnemyCharacter.h"
 #include "NTEyeSentinelCharacter.generated.h"
 
-class UNTEnemyHealthComponent;
 class USplineComponent;
 class UNiagaraSystem;
 
@@ -18,9 +17,6 @@ class NOVAETERRAE_API ANTEyeSentinelCharacter : public ANTBaseEnemyCharacter
 
 public:
 	ANTEyeSentinelCharacter();
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UNTEnemyHealthComponent* HealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     USplineComponent* SplineComponent;

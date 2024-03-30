@@ -8,7 +8,6 @@
 #include "NTRocketSentinelCharacter.generated.h"
 
 class UStaticMeshComponent;
-class UNTEnemyHealthComponent;
 class UNiagaraSystem;
 
 UCLASS()
@@ -21,9 +20,6 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UStaticMeshComponent* StaticMeshComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UNTEnemyHealthComponent* HealthComponent;
 
     UPROPERTY(EditAnywhere, Category = "VFX")
     UNiagaraSystem* DeathEffect;

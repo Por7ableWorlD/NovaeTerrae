@@ -7,7 +7,7 @@
 #include "Core/AI/NTBaseEnemyCharacter.h"
 #include "NTDistortedHunter.generated.h"
 
-class UNTEnemyHealthComponent;
+
 
 UCLASS()
 class NOVAETERRAE_API ANTDistortedHunter : public ANTBaseEnemyCharacter
@@ -16,9 +16,6 @@ class NOVAETERRAE_API ANTDistortedHunter : public ANTBaseEnemyCharacter
 
 public:
 	ANTDistortedHunter();
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UNTEnemyHealthComponent* HealthComponent;
 
 protected:
 
