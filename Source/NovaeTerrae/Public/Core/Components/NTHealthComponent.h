@@ -30,6 +30,7 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Health")
     float GetMaxHealth() const { return MaxHealth; }
 
+    UFUNCTION(BlueprintCallable, Category = "Health")
     void SetHealth(float NewHealth);
 
 protected:
