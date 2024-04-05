@@ -56,6 +56,7 @@ public:
 protected:
     virtual void BeginPlay() override;
 
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Companion")
     ANTCompanionCharacter* Companion;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
@@ -84,9 +85,6 @@ protected:
 
     UPROPERTY(EditDefaultsOnly, Category = "Damage", meta = (ClampMin = "1000.0", ClampMax = "3500.0"))
     float LandedDeathVelocity = 1500.0f;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite)
-    bool IsFastReloadEnabled = false;
 
 #pragma region Enhanced Inputs
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
@@ -157,8 +155,6 @@ private:
     void OnScan();
 
     void OnFastReload();
-    void OnFastReloadEnable();
-    void OnFastReloadDisable();
 
     void OnResetDeath();
 
