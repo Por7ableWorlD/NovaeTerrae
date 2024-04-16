@@ -34,24 +34,10 @@ void ANTRocketSentinelCharacter::BeginPlay()
 
     check(HealthComponent);
 
-    HealthComponent->OnTakeDamageFromPlayer.AddUObject(this, &ANTRocketSentinelCharacter::EnableAgressiveMode);
-
     HealthComponent->OnDeath.AddDynamic(this, &ANTRocketSentinelCharacter::OnDeath);
 
     HealthComponent->OnActionThresholdReached.AddUObject(this, &ANTRocketSentinelCharacter::OnShieldEnable);
 	
-}
-
-void ANTRocketSentinelCharacter::EnableAgressiveMode(float Damage)
-{
-    AAIController* AIController = GetController<AAIController>();
-
-    if (!AIController)
-    {
-        return;
-    }
-
-    HealthComponent->OnTakeDamageFromEnemy(AIController);
 }
 
 void ANTRocketSentinelCharacter::OnDeath(AActor* DeathCauser)

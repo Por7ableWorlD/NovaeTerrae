@@ -24,22 +24,8 @@ void ANTDistortedHunter::BeginPlay()
 
 	check(HealthComponent);
 
-    HealthComponent->OnTakeDamageFromPlayer.AddUObject(this, &ANTDistortedHunter::EnableAgressiveMode);
-
     HealthComponent->OnDeath.AddDynamic(this, &ANTDistortedHunter::OnDeath);
 	
-}
-
-void ANTDistortedHunter::EnableAgressiveMode(float Damage)
-{
-    AAIController* AIController = GetController<AAIController>();
-
-    if (!AIController)
-    {
-        return;
-    }
-
-    HealthComponent->OnTakeDamageFromEnemy(AIController);
 }
 
 void ANTDistortedHunter::OnDeath(AActor* DeathCauser)
@@ -51,7 +37,7 @@ void ANTDistortedHunter::OnDeath(AActor* DeathCauser)
         return;
     }
 
-    AIController->UnPossess();
+    DetachFromControllerPendingDestroy();
 
     if (!DeathAnimMontage)
     {

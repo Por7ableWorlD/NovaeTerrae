@@ -29,7 +29,7 @@ void UNTHealthComponent::BeginPlay()
 void UNTHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (Damage <= 0.0f || IsDead() || !GetWorld() || !DamageCauser)
+    if (Damage <= 0.0f || IsDead() || !GetWorld())
     {
         return;
     }
@@ -39,7 +39,7 @@ void UNTHealthComponent::OnTakeAnyDamage(
 
     SetHealth(CurrentHealth - Damage);
 
-    if (IsDead())
+    if (IsDead() && DamageCauser)
     {
         OnDeath.Broadcast(DamageCauser);
         UE_LOG(LogHealthComponent, Display, TEXT("Death\nLast damage: %.0f"), Damage);

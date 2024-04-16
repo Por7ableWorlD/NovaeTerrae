@@ -27,7 +27,7 @@ void UNTEnemyHealthComponent::BeginPlay()
 void UNTEnemyHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const UDamageType* DamageType, AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (!DamageCauser)
+    if (!DamageCauser && !InstigatedBy)
     {
         return;
     }
@@ -37,30 +37,17 @@ void UNTEnemyHealthComponent::OnTakeAnyDamage(
         return;
     }
 
-    if (DamageCauser->IsA<ANTWeakPoint>())
+    float FinalDamage = Damage * (1 - (DamageResistancePercentage / 100));
+
+    if (DamageCauser && DamageCauser->IsA<ANTWeakPoint>())
     {
-        OnTakeDamageFromPlayer.Broadcast(FMath::Clamp(Damage, 0.0f, GetCurrentHealth()));
-        Super::OnTakeAnyDamage(DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
-        return;
+        FinalDamage = Damage;
     }
 
-    float FinalDamage = Damage * (1 - (DamageResistancePercentage / 100));
     OnTakeDamageFromPlayer.Broadcast(FMath::Clamp(FinalDamage, 0.0f, GetCurrentHealth()));
     Super::OnTakeAnyDamage(DamagedActor, FinalDamage, DamageType, InstigatedBy, DamageCauser);
-
-}
-
-void UNTEnemyHealthComponent::OnTakeDamageFromEnemy(AAIController* AIController) 
-{
-    if (!AIController)
-    {
-        return;
-    }
-
-    AIController->GetBlackboardComponent()->SetValueAsObject(FName("TargetActor"), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
-    AIController->GetBlackboardComponent()->SetValueAsBool(FName("AgressiveState"), true);
-    
     CheckActionThreshold();
+
 }
 
 void UNTEnemyHealthComponent::CheckActionThreshold()
