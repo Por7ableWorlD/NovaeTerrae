@@ -19,4 +19,8 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTEnemyHealthComponent* HealthComponent;
 
+protected:
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataTables")
+    FName DataTableRowName = "DefaultSettings";
+
 };

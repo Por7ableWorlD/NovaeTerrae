@@ -88,7 +88,13 @@ protected:
 
 #pragma region Enhanced Inputs
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-    class UInputMappingContext* InputMappingContext;
+    class UInputMappingContext* LocomotionInputMappingContext;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputMappingContext* AbilitiesInputMappingContext;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputMappingContext* ExplorationInputMappingContext;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* MoveAction;

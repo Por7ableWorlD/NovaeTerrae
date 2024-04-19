@@ -108,7 +108,9 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         return;
     }
 
-    Subsystem->AddMappingContext(InputMappingContext, 0);
+    Subsystem->AddMappingContext(LocomotionInputMappingContext, 0);
+    Subsystem->AddMappingContext(ExplorationInputMappingContext, 0);
+    Subsystem->AddMappingContext(AbilitiesInputMappingContext, 0);
 
     UEnhancedInputComponent* PlayerInput = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 

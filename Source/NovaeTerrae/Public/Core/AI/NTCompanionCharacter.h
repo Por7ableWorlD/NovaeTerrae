@@ -73,6 +73,9 @@ protected:
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "100.0"))
     float ScanThreshold = 25.0f;
 
+    UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataTables")
+    FName DataTableRowName = "DefaultSettings";
+
 private:
     bool CanSacrifice = true;
     bool CanScan = true;
