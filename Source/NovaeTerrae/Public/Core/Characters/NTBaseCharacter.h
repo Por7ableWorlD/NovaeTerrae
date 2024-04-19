@@ -91,7 +91,7 @@ protected:
     class UInputMappingContext* LocomotionInputMappingContext;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-    class UInputMappingContext* AbilitiesInputMappingContext;
+    class UInputMappingContext* DefaultInputMappingContext;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputMappingContext* ExplorationInputMappingContext;
