@@ -45,32 +45,19 @@ ANTBaseCharacter::ANTBaseCharacter(const FObjectInitializer& ObjInit)
     CameraComponent->SetupAttachment(SpringArmComponent);
     CameraComponent->bUsePawnControlRotation = false;
 
-    HealthComponentPrivet = CreateDefaultSubobject<UNTHealthComponent>("HealthComponent");
+    HealthComponent = CreateDefaultSubobject<UNTHealthComponent>("HealthComponent");
 
     ThirstComponent = CreateDefaultSubobject<UNTThirstComponent>("ThirstComponent");
-
-    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
-    HealthTextComponent->SetupAttachment(GetRootComponent());
-
-    ThirstTextComponent = CreateDefaultSubobject<UTextRenderComponent>("ThirstTextComponent");
-    ThirstTextComponent->SetupAttachment(GetRootComponent());
 }
 
 void ANTBaseCharacter::BeginPlay()
 {
     Super::BeginPlay();
 
-    check(HealthComponentPrivet);
-    check(HealthTextComponent);
-    check(ThirstTextComponent);
+    check(HealthComponent);
     check(GetCharacterMovement());
 
-    OnCurrentHealthChanged(HealthComponentPrivet->GetCurrentHealth());
-    HealthComponentPrivet->OnCurrentHealthChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentHealthChanged);
-    HealthComponentPrivet->OnDeath.AddDynamic(this, &ANTBaseCharacter::OnDeath);
-
-    OnCurrentThirstChanged(ThirstComponent->GetCurrentThirst());
-    ThirstComponent->OnCurrentThirstChanged.AddUObject(this, &ANTBaseCharacter::OnCurrentThirstChanged);
+    HealthComponent->OnDeath.AddDynamic(this, &ANTBaseCharacter::OnDeath);
 
     LandedDelegate.AddDynamic(this, &ANTBaseCharacter::OnGroundLanded);
 
@@ -228,13 +215,13 @@ void ANTBaseCharacter::OnThirstRemove()
 
     ThirstComponent->SetThirst(0.0f);
     GameTags.RemoveTag(FStatusGameplayTags::Get().Thirst);
-    HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetCurrentHealth() + 25.0f);
+    HealthComponent->SetHealth(HealthComponent->GetCurrentHealth() + 25.0f);
     OnThirstRemoveSignature.Broadcast();
 }
 
 void ANTBaseCharacter::OnSacrifice() 
 {
-    if (HealthComponentPrivet->GetCurrentHealth() == HealthComponentPrivet->GetMaxHealth())
+    if (HealthComponent->GetCurrentHealth() == HealthComponent->GetMaxHealth())
     {
         return;
     }
@@ -244,8 +231,8 @@ void ANTBaseCharacter::OnSacrifice()
 
 void ANTBaseCharacter::SacrificingHeal(float SacrificedHealth)
 {
-    float NewHealth = HealthComponentPrivet->GetCurrentHealth() + SacrificedHealth;
-    HealthComponentPrivet->SetHealth(NewHealth);
+    float NewHealth = HealthComponent->GetCurrentHealth() + SacrificedHealth;
+    HealthComponent->SetHealth(NewHealth);
 }
 
 void ANTBaseCharacter::OnScan()
@@ -262,23 +249,13 @@ void ANTBaseCharacter::OnResetDeath()
 {
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
     EnableInput(PlayerController);
-    HealthComponentPrivet->SetHealth(HealthComponentPrivet->GetMaxHealth());
+    HealthComponent->SetHealth(HealthComponent->GetMaxHealth());
     OnResetPlayerDeathSignature.Broadcast();
 }
 
 bool ANTBaseCharacter::IsRunning() const
 {
     return bWantsToRun && !GetVelocity().IsZero();
-}
-
-void ANTBaseCharacter::OnCurrentHealthChanged(float CurrentHealth)
-{
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), FMath::CeilToFloat(CurrentHealth))));
-}
-
-void ANTBaseCharacter::OnCurrentThirstChanged(float CurrentThirst)
-{
-    ThirstTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentThirst)));
 }
 
 void ANTBaseCharacter::OnDeath(AActor* DeathCauser)
@@ -337,5 +314,5 @@ void ANTBaseCharacter::OnGroundLanded(const FHitResult& Hit)
         return;
     }
 
-    TakeDamage(HealthComponentPrivet->GetCurrentHealth(), FDamageEvent{}, nullptr, nullptr);
+    TakeDamage(HealthComponent->GetCurrentHealth(), FDamageEvent{}, nullptr, nullptr);
 }

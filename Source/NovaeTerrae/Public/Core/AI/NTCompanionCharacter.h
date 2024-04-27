@@ -30,9 +30,6 @@ public:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTCompanionHealthComponent* CompanionHealthComponent;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent* HealthTextComponent;
-
     FOnSacrificeStart OnSacrificeStart;
 
     UPROPERTY(BlueprintAssignable);
@@ -43,8 +40,6 @@ public:
 
 protected:
     virtual void BeginPlay() override;
-
-    void OnCurrentHealthChanged(float CurrentHealth);
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills")
     float ThirstRemoveHealthCost = 30.0f;

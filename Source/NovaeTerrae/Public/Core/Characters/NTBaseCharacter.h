@@ -66,16 +66,10 @@ protected:
     UCameraComponent* CameraComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UNTHealthComponent* HealthComponentPrivet;
+    UNTHealthComponent* HealthComponent;
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTThirstComponent* ThirstComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent* HealthTextComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UTextRenderComponent* ThirstTextComponent;
 
     UPROPERTY(EditDefaultsOnly, Category = "Animations")
     UAnimMontage* DeathAnimMontage;
@@ -136,10 +130,10 @@ private:
 
     FTimerHandle DeathTimer;
 
-    UPROPERTY(EditDefaultsOnly, Category = "CameraAngle", meta = (ClampMin = "-60", ClampMax = "-30"))
+    UPROPERTY(EditDefaultsOnly, Category = "CameraAngle", meta = (ClampMin = "-170", ClampMax = "-1"))
     double MinCameraAngle;
 
-    UPROPERTY(EditDefaultsOnly, Category = "CameraAngle", meta = (ClampMin = "10", ClampMax = "40"))
+    UPROPERTY(EditDefaultsOnly, Category = "CameraAngle", meta = (ClampMin = "1", ClampMax = "170"))
     double MaxCameraAngle;
 
     void Movement(const FInputActionValue& InputValue);
@@ -164,14 +158,10 @@ private:
 
     void OnResetDeath();
 
-    void OnCurrentHealthChanged(float CurrentHealth);
-
     UFUNCTION()
     void OnDeath(AActor* DeathCauser);
 
     void PlayDeathAnimation(AActor* DeathCauser, bool ResetThirst);
-
-    void OnCurrentThirstChanged(float CurrentThirst);
 
     UFUNCTION()
     void OnGroundLanded(const FHitResult& Hit);

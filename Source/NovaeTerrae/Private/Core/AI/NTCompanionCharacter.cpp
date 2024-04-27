@@ -19,9 +19,6 @@ ANTCompanionCharacter::ANTCompanionCharacter()
     StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
     StaticMeshComponent->SetupAttachment(GetRootComponent());
 
-    HealthTextComponent = CreateDefaultSubobject<UTextRenderComponent>("HealthTextComponent");
-    HealthTextComponent->SetupAttachment(GetRootComponent());
-
     CompanionHealthComponent = CreateDefaultSubobject<UNTCompanionHealthComponent>("CompanionHealthComponent");
 }
 
@@ -30,10 +27,7 @@ void ANTCompanionCharacter::BeginPlay()
     Super::BeginPlay();
 
     check(CompanionHealthComponent);
-    check(HealthTextComponent);
 
-    OnCurrentHealthChanged(CompanionHealthComponent->GetCurrentHealth());
-    CompanionHealthComponent->OnCurrentHealthChanged.AddUObject(this, &ANTCompanionCharacter::OnCurrentHealthChanged);
     CompanionHealthComponent->OnRegenerationFinished.AddUObject(this, &ANTCompanionCharacter::EnableActions);
     CompanionHealthComponent->OnDeath.AddDynamic(this, &ANTCompanionCharacter::DisableActions);
 
@@ -57,11 +51,6 @@ void ANTCompanionCharacter::BeginPlay()
     }
 
     AIController->GetBlackboardComponent()->SetValueAsObject(FName("Player"), Player);
-}
-
-void ANTCompanionCharacter::OnCurrentHealthChanged(float CurrentHealth)
-{
-    HealthTextComponent->SetText(FText::FromString(FString::Printf(TEXT("%.0f"), CurrentHealth)));
 }
 
 void ANTCompanionCharacter::OnThirstRemoveRequest() 
