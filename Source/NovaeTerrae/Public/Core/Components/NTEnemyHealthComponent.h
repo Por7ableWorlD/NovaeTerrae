@@ -26,8 +26,6 @@ public:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior")
     bool EnableActionThreshold = true;
 
-    void OnTakeDamageFromEnemy(AAIController* AIController);
-
     UFUNCTION(BlueprintCallable, Category = "Health")
     void SetDefaultMaxHealth(float NewMaxHealth);
 

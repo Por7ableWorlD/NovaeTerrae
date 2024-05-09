@@ -44,7 +44,14 @@ void UNTCompanionHealthComponent::OnTakeAnyDamage(
 
     // GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 
-    SetHealth(GetCurrentHealth() - Damage);
+    float RemainingDamage = Damage - GetCurrentShieldHealth();
+
+    SetShieldHealth(GetCurrentShieldHealth() - Damage);
+
+    if (RemainingDamage > 0)
+    {
+        SetHealth(GetCurrentHealth() - RemainingDamage);
+    }
 
     if (IsDead())
     {

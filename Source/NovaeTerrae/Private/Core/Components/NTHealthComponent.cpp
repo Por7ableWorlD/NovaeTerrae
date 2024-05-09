@@ -37,7 +37,14 @@ void UNTHealthComponent::OnTakeAnyDamage(
     // UE_LOG(LogHealthComponent, Display, TEXT("Current health before take damage: %.0f"), CurrentHealth);
     // UE_LOG(LogHealthComponent, Display, TEXT("Take damage: %.0f"), Damage);
 
-    SetHealth(CurrentHealth - Damage);
+    float RemainingDamage = Damage - CurrentShieldHealth;
+
+    SetShieldHealth(CurrentShieldHealth - Damage);
+
+    if (RemainingDamage > 0)
+    {
+        SetHealth(CurrentHealth - RemainingDamage);
+    }    
 
     if (IsDead() && DamageCauser)
     {
@@ -54,5 +61,11 @@ void UNTHealthComponent::RestoreFullHealth()
 void UNTHealthComponent::SetHealth(float NewHealth)
 {
     CurrentHealth = FMath::Clamp(NewHealth, 0.0f, MaxHealth);
+    OnCurrentHealthChanged.Broadcast(CurrentHealth);
+}
+
+void UNTHealthComponent::SetShieldHealth(float NewHealth) 
+{
+    CurrentShieldHealth = FMath::Clamp(NewHealth, 0.0f, MaxShieldHealth);
     OnCurrentHealthChanged.Broadcast(CurrentHealth);
 }
