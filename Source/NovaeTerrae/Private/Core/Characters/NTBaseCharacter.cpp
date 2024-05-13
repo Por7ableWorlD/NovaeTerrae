@@ -69,6 +69,7 @@ void ANTBaseCharacter::BeginPlay()
     }
 
     Companion->OnSacrificeStart.AddUObject(this, &ANTBaseCharacter::SacrificingHeal);
+    Companion->OnThirstRemoveStart.AddUObject(this, &ANTBaseCharacter::ThirstRemoval);
 }
 
 void ANTBaseCharacter::Tick(float DeltaTime)
@@ -111,8 +112,8 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
 
         PlayerInput->BindAction(DashAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnDash);
 
-        PlayerInput->BindAction(RunAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnStartRunnig);
-        PlayerInput->BindAction(RunAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopRunnig);
+        PlayerInput->BindAction(WalkAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnStartWalking);
+        PlayerInput->BindAction(WalkAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopWalking);
 
         PlayerInput->BindAction(ThirstRemoveAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnThirstRemove);
 
@@ -175,19 +176,19 @@ void ANTBaseCharacter::Look(const FInputActionValue& InputValue)
     // AddControllerPitchInput(InputVector.Y);
 }
 
-void ANTBaseCharacter::OnStartRunnig()
+void ANTBaseCharacter::OnStartWalking()
 {
-    bWantsToRun = true;
+    bWantsToWalk = true;
 }
 
-void ANTBaseCharacter::OnStopRunnig()
+void ANTBaseCharacter::OnStopWalking()
 {
-    bWantsToRun = false;
+    bWantsToWalk = false;
 }
 
 void ANTBaseCharacter::OnDash() 
 {
-    if ((IsRunning() && !GetCharacterMovement()->IsFalling()) || (!CanDash))
+    if ((IsWalking() && !GetCharacterMovement()->IsFalling()) || (!CanDash))
     {
         return;
     }
@@ -213,10 +214,14 @@ void ANTBaseCharacter::OnThirstRemove()
         return;
     }
 
+    OnThirstRemoveSignature.Broadcast();
+}
+
+void ANTBaseCharacter::ThirstRemoval(float HealthToRestore)
+{
     ThirstComponent->SetThirst(0.0f);
     GameTags.RemoveTag(FStatusGameplayTags::Get().Thirst);
-    HealthComponent->SetHealth(HealthComponent->GetCurrentHealth() + 25.0f);
-    OnThirstRemoveSignature.Broadcast();
+    HealthComponent->SetHealth(HealthComponent->GetCurrentHealth() + HealthToRestore);
 }
 
 void ANTBaseCharacter::OnSacrifice() 
@@ -253,9 +258,9 @@ void ANTBaseCharacter::OnResetDeath()
     OnResetPlayerDeathSignature.Broadcast();
 }
 
-bool ANTBaseCharacter::IsRunning() const
+bool ANTBaseCharacter::IsWalking() const
 {
-    return bWantsToRun && !GetVelocity().IsZero();
+    return bWantsToWalk && !GetVelocity().IsZero();
 }
 
 void ANTBaseCharacter::OnDeath(AActor* DeathCauser)

@@ -12,6 +12,7 @@ class UStaticMeshComponent;
 class UNTCompanionHealthComponent;
 class UTextRenderComponent;
 
+DECLARE_MULTICAST_DELEGATE_OneParam(FOnThirstRemoveStart, float);
 DECLARE_MULTICAST_DELEGATE_OneParam(FOnSacrificeStart, float);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFastReloadStart);
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnFastReloadEnd);
@@ -29,6 +30,8 @@ public:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTCompanionHealthComponent* CompanionHealthComponent;
+    
+    FOnThirstRemoveStart OnThirstRemoveStart;
 
     FOnSacrificeStart OnSacrificeStart;
 
@@ -42,31 +45,31 @@ protected:
     virtual void BeginPlay() override;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills")
-    float ThirstRemoveHealthCost = 30.0f;
+    float ThirstRemoveCost = 30.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills")
+    float ThirstRemoveHealthRestoration = 25.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "120.0"))
     float SacrificeCooldown = 0.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "100.0"))
-    float SacrificeThreshold = 100.0f;
+    float SacrificeCost = 30.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills")
-    float HealthSacrifice = 25.0f;
+    float HealthSacrifice = 30.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "120.0"))
     float FastReloadCooldown = 20.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "100.0"))
-    float FastReloadThreshold = 50.0f;
+    float FastReloadCost = 50.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "20.0"))
     float FastReloadDuration = 5.0f;
 
     UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "120.0"))
     float ScanCooldown = 15.0f;
-
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "CompanionSkills", meta = (ClampMin = "0.0", ClampMax = "100.0"))
-    float ScanThreshold = 25.0f;
 
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataTables")
     FName DataTableRowName = "DefaultSettings";
@@ -89,8 +92,4 @@ private:
     void OnSacrificeReset();
     void OnFastReloadReset();
     void OnScanReset();
-
-    UFUNCTION()
-    void DisableActions(AActor* DeathCauser);
-    void EnableActions();
 };

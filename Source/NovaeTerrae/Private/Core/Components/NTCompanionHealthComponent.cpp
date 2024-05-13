@@ -10,16 +10,9 @@ DEFINE_LOG_CATEGORY_STATIC(LogCompanionHealthComponent, All, All)
 
 UNTCompanionHealthComponent::UNTCompanionHealthComponent() {}
 
-bool UNTCompanionHealthComponent::CheckHealthThreshold(float SkillThreshold) const
+bool UNTCompanionHealthComponent::CheckHealthThreshold(float SkillCost) const
 {
-    float HealthThresholdValue = SkillThreshold / 100 * MaxHealth;
-
-    if (HealthThresholdValue <= GetCurrentHealth())
-    {
-        return true;
-    }
-
-    return false;
+    return GetCurrentHealth() - SkillCost >= 0;
 }
 
 void UNTCompanionHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
@@ -37,12 +30,12 @@ void UNTCompanionHealthComponent::SetDefaultMaxHealth(float NewMaxHealth)
 void UNTCompanionHealthComponent::OnTakeAnyDamage(
     AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser)
 {
-    if (Damage <= 0.0f || !GetWorld() || HealTimerHandle.IsValid() || IsDead() || !DamageCauser || !DamageCauser->IsA<ANTCompanionCharacter>())
+    if (Damage <= 0.0f || !GetWorld() || IsDead() || !DamageCauser || !DamageCauser->IsA<ANTCompanionCharacter>())
     {
         return;
     }
 
-    // GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
+    GetWorld()->GetTimerManager().ClearTimer(HealTimerHandle);
 
     float RemainingDamage = Damage - GetCurrentShieldHealth();
 

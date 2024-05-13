@@ -34,7 +34,7 @@ public:
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
-    bool IsRunning() const;
+    bool IsWalking() const;
 
     UPROPERTY(BlueprintAssignable);
     FOnResetDeathSignature OnResetPlayerDeathSignature;
@@ -100,7 +100,7 @@ protected:
     class UInputAction* JumpAction;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
-    class UInputAction* RunAction;
+    class UInputAction* WalkAction;
     
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* DashAction;
@@ -119,8 +119,7 @@ protected:
 #pragma endregion
 
 private:
-    bool bWantsToRun = false;
-    bool bIsMovingForward = false;
+    bool bWantsToWalk = false;
 
 #pragma region Dash
     FTimerHandle DashReseter;
@@ -137,17 +136,17 @@ private:
     double MaxCameraAngle;
 
     void Movement(const FInputActionValue& InputValue);
-    void OnStopMovement();
 
     void Look(const FInputActionValue& InputValue);
 
-    void OnStartRunnig();
-    void OnStopRunnig();
+    void OnStartWalking();
+    void OnStopWalking();
 
     void OnDash();
     void OnResetDash();
 
     void OnThirstRemove();
+    void ThirstRemoval(float HealthToRestore);
 
     void OnSacrifice();
     void SacrificingHeal(float SacrificedHealth);

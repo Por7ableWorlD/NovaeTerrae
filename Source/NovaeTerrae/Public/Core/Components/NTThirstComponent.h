@@ -6,7 +6,7 @@
 #include "Components/ActorComponent.h"
 #include "NTThirstComponent.generated.h"
 
-DECLARE_MULTICAST_DELEGATE_OneParam(FOnCurrentThirstChangedSignature, float);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnCurrentThirstChangedSignature, float, NewThirst);
 
 UCLASS(ClassGroup = (Custom), meta = (BlueprintSpawnableComponent))
 class NOVAETERRAE_API UNTThirstComponent : public UActorComponent
@@ -16,6 +16,7 @@ class NOVAETERRAE_API UNTThirstComponent : public UActorComponent
 public:
     UNTThirstComponent();
 
+    UPROPERTY(BlueprintAssignable);
     FOnCurrentThirstChangedSignature OnCurrentThirstChanged;
 
     UFUNCTION(BlueprintCallable, Category = "Thirst")

@@ -15,8 +15,8 @@ class NOVAETERRAE_API UNTCharacterMovementComponent : public UCharacterMovementC
     GENERATED_BODY()
 
 public:
-    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "1.1", ClampMax = "3.0"))
-    float RunModifier = 2.0f;
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Movement", meta = (ClampMin = "0.1", ClampMax = "1.0"))
+    float WalkModifier = 0.25f;
 
     virtual float GetMaxSpeed() const override;
 };

@@ -7,5 +7,5 @@ float UNTCharacterMovementComponent::GetMaxSpeed() const
 {
     const float MaxSpeed = Super::GetMaxSpeed();
     const ANTBaseCharacter* Player = Cast<ANTBaseCharacter>(GetPawnOwner());
-    return Player && Player->IsRunning() ? MaxSpeed * RunModifier : MaxSpeed;
+    return Player && Player->IsWalking() ? MaxSpeed * WalkModifier : MaxSpeed;
 }

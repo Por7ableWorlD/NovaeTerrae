@@ -28,9 +28,6 @@ void ANTCompanionCharacter::BeginPlay()
 
     check(CompanionHealthComponent);
 
-    CompanionHealthComponent->OnRegenerationFinished.AddUObject(this, &ANTCompanionCharacter::EnableActions);
-    CompanionHealthComponent->OnDeath.AddDynamic(this, &ANTCompanionCharacter::DisableActions);
-
     ANTBaseCharacter* Player = Cast<ANTBaseCharacter>(UGameplayStatics::GetPlayerCharacter(GetWorld(), 0));
 
     if (!Player)
@@ -55,13 +52,20 @@ void ANTCompanionCharacter::BeginPlay()
 
 void ANTCompanionCharacter::OnThirstRemoveRequest() 
 {
-    float SacrificedHealth = FMath::Clamp(ThirstRemoveHealthCost, 0.0f, CompanionHealthComponent->GetCurrentHealth());
-    UGameplayStatics::ApplyDamage(this, SacrificedHealth, Controller, this, nullptr);
+    if (!CompanionHealthComponent->CheckHealthThreshold(ThirstRemoveCost))
+    {
+        if (GEngine)
+            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("ThirstRemoveThresholdReached"));
+        return;
+    }
+
+    UGameplayStatics::ApplyDamage(this, ThirstRemoveCost, Controller, this, nullptr);
+    OnThirstRemoveStart.Broadcast(ThirstRemoveHealthRestoration);
 }
 
 void ANTCompanionCharacter::OnSacrificeRequest()
 {
-    if (!CompanionHealthComponent->CheckHealthThreshold(SacrificeThreshold))
+    if (!CompanionHealthComponent->CheckHealthThreshold(SacrificeCost))
     {
         if (GEngine)
             GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("SacrificeThresholdReached"));
@@ -76,10 +80,9 @@ void ANTCompanionCharacter::OnSacrificeRequest()
     }
     if (GEngine)
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("SacrificeSuccessful"));
-    float SacrificedHealth = FMath::Clamp(HealthSacrifice, 0.0f, CompanionHealthComponent->GetCurrentHealth());
 
-    OnSacrificeStart.Broadcast(SacrificedHealth);
-    UGameplayStatics::ApplyDamage(this, SacrificedHealth, Controller, this, nullptr);
+    OnSacrificeStart.Broadcast(HealthSacrifice);
+    UGameplayStatics::ApplyDamage(this, SacrificeCost, Controller, this, nullptr);
 
     if (SacrificeCooldown == 0)
     {
@@ -92,7 +95,7 @@ void ANTCompanionCharacter::OnSacrificeRequest()
 
 void ANTCompanionCharacter::OnFastReloadRequest() 
 {
-    if (!CompanionHealthComponent->CheckHealthThreshold(FastReloadCooldown))
+    if (!CompanionHealthComponent->CheckHealthThreshold(FastReloadCost))
     {
         if (GEngine)
             GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("FastReloadThresholdReached"));
@@ -120,6 +123,8 @@ void ANTCompanionCharacter::OnFastReloadRequest()
         },
         FastReloadDuration, false);
 
+    UGameplayStatics::ApplyDamage(this, FastReloadCost, Controller, this, nullptr);
+
     if (FastReloadCooldown == 0)
     {
         return;
@@ -131,12 +136,6 @@ void ANTCompanionCharacter::OnFastReloadRequest()
 
 void ANTCompanionCharacter::OnScanRequest()
 {
-    if (!CompanionHealthComponent->CheckHealthThreshold(ScanThreshold))
-    {
-        if (GEngine)
-            GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("ScanThresholdReached"));
-        return;
-    }
 
     if (!CanScan)
     {
@@ -188,39 +187,4 @@ void ANTCompanionCharacter::OnScanReset()
     GetWorld()->GetTimerManager().ClearTimer(ScanReseter);
 }
 
-void ANTCompanionCharacter::DisableActions(AActor* DeathCauser)
-{
-    GetWorld()->GetTimerManager().ClearTimer(SacrificeReseter);
-    GetWorld()->GetTimerManager().ClearTimer(FastReloadReseter);
-    GetWorld()->GetTimerManager().ClearTimer(ScanReseter);
 
-    CanSacrifice = false;
-    CanFastReload = false;
-    CanScan = false;
-
-    AAIController* AIController = GetController<AAIController>();
-
-
-    if (!AIController)
-    {
-        return;
-    }
-
-    AIController->GetBlackboardComponent()->SetValueAsBool(FName("Regenerating"), true);
-}
-
-void ANTCompanionCharacter::EnableActions() 
-{
-    CanSacrifice = true;
-    CanFastReload = true;
-    CanScan = true;
-
-    AAIController* AIController = GetController<AAIController>();
-
-    if (!AIController)
-    {
-        return;
-    }
-
-    AIController->GetBlackboardComponent()->SetValueAsBool(FName("Regenerating"), false);
-}
