@@ -125,6 +125,16 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
     }
 }
 
+void ANTBaseCharacter::Jump() 
+{
+    if (!GetCharacterMovement()->IsJumpAllowed())
+    {
+        return;
+    }
+
+    Super::Jump();
+}
+
 void ANTBaseCharacter::Movement(const FInputActionValue& InputValue)
 {
     FVector2D InputVector = InputValue.Get<FVector2D>();
@@ -184,6 +194,12 @@ void ANTBaseCharacter::OnStartWalking()
 void ANTBaseCharacter::OnStopWalking()
 {
     bWantsToWalk = false;
+}
+
+void ANTBaseCharacter::OnResetJump() 
+{
+    GetCharacterMovement()->SetJumpAllowed(true);
+    GetWorld()->GetTimerManager().ClearTimer(JumpReseter);
 }
 
 void ANTBaseCharacter::OnDash() 
@@ -292,9 +308,6 @@ void ANTBaseCharacter::PlayDeathAnimation(AActor* DeathCauser, bool ResetThirst)
         GameTags.RemoveTag(FStatusGameplayTags::Get().Thirst);
     }
 
-    DeathAnimMontage->bEnableAutoBlendOut = true;
-    PlayAnimMontage(DeathAnimMontage);
-
     // GetCharacterMovement()->DisableMovement();
     APlayerController* PlayerController = Cast<APlayerController>(Controller);
     DisableInput(PlayerController);
@@ -310,6 +323,10 @@ void ANTBaseCharacter::PlayDeathAnimation(AActor* DeathCauser, bool ResetThirst)
 
 void ANTBaseCharacter::OnGroundLanded(const FHitResult& Hit)
 {
+    GetCharacterMovement()->SetJumpAllowed(false);
+    
+    GetWorld()->GetTimerManager().SetTimer(JumpReseter, this, &ANTBaseCharacter::OnResetJump, ResetJumpDelay, false);
+
     const auto FallVelocityZ = -GetVelocity().Z;
 
     UE_LOG(LogBaseCharacter, Display, TEXT("Fall Velocity Z = %.0f"), FallVelocityZ);

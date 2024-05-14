@@ -32,6 +32,7 @@ public:
 
     virtual void Tick(float DeltaTime) override;
     virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+    virtual void Jump() override;
 
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsWalking() const;
@@ -70,9 +71,6 @@ protected:
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTThirstComponent* ThirstComponent;
-
-    UPROPERTY(EditDefaultsOnly, Category = "Animations")
-    UAnimMontage* DeathAnimMontage;
 
     UPROPERTY(EditDefaultsOnly, Category = "Damage")
     float LifeSpanOnDeath = 5.0f;
@@ -127,6 +125,11 @@ private:
     bool CanDash = true;
 #pragma endregion
 
+#pragma region Dash
+    FTimerHandle JumpReseter;
+    float ResetJumpDelay = 0.75f;
+#pragma endregion
+
     FTimerHandle DeathTimer;
 
     UPROPERTY(EditDefaultsOnly, Category = "CameraAngle", meta = (ClampMin = "-170", ClampMax = "-1"))
@@ -141,6 +144,8 @@ private:
 
     void OnStartWalking();
     void OnStopWalking();
+
+    void OnResetJump();
 
     void OnDash();
     void OnResetDash();

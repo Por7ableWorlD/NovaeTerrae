@@ -27,8 +27,6 @@ public:
 protected:
 	virtual void BeginPlay() override;
 
-    void EnableAgressiveMode(float Damage);
-
     UFUNCTION()
     void OnDeath(AActor* DeathCauser);
 

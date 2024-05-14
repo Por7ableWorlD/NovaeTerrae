@@ -38,16 +38,6 @@ void ANTDistortedHunter::OnDeath(AActor* DeathCauser)
     }
 
     DetachFromControllerPendingDestroy();
-
-    if (!DeathAnimMontage)
-    {
-        return;
-    }
-
-    IsDead = true;
-
-    DeathAnimMontage->bEnableAutoBlendOut = true;
-    PlayAnimMontage(DeathAnimMontage);
 }
 
 
