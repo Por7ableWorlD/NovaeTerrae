@@ -127,7 +127,7 @@ private:
 
 #pragma region Dash
     FTimerHandle JumpReseter;
-    float ResetJumpDelay = 0.75f;
+    float ResetJumpDelay = 0.5f;
 #pragma endregion
 
     FTimerHandle DeathTimer;
