@@ -335,6 +335,6 @@ void ANTBaseCharacter::OnGroundLanded(const FHitResult& Hit)
     {
         return;
     }
-
-    TakeDamage(HealthComponent->GetCurrentHealth(), FDamageEvent{}, nullptr, nullptr);
+    
+    UGameplayStatics::ApplyDamage(this, HealthComponent->GetCurrentHealth(), nullptr, this, nullptr);
 }
