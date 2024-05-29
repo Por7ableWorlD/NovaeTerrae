@@ -115,6 +115,8 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         PlayerInput->BindAction(WalkAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnStartWalking);
         PlayerInput->BindAction(WalkAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopWalking);
 
+        PlayerInput->BindAction(AimAction, ETriggerEvent::Started, this, &ANTBaseCharacter::ToggleAim);
+
         PlayerInput->BindAction(ThirstRemoveAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnThirstRemove);
 
         PlayerInput->BindAction(SacrificeAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnSacrifice);
@@ -223,6 +225,11 @@ void ANTBaseCharacter::OnResetDash()
    // UE_LOG(LogBaseCharacter, Error, TEXT("Heal: %f"), HealthComponent->GetMaxHealth());
 }
 
+void ANTBaseCharacter::ToggleAim()
+{
+    bIsAiming = !bIsAiming;
+}
+
 void ANTBaseCharacter::OnThirstRemove() 
 {
     if (!GameTags.HasTag(FStatusGameplayTags::Get().Thirst))
@@ -277,6 +284,11 @@ void ANTBaseCharacter::OnResetDeath()
 bool ANTBaseCharacter::IsWalking() const
 {
     return bWantsToWalk && !GetVelocity().IsZero();
+}
+
+bool ANTBaseCharacter::IsAiming() const
+{
+    return bIsAiming;
 }
 
 void ANTBaseCharacter::OnDeath(AActor* DeathCauser)

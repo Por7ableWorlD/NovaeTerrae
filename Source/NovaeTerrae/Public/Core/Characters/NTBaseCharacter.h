@@ -37,6 +37,9 @@ public:
     UFUNCTION(BlueprintCallable, Category = "Movement")
     bool IsWalking() const;
 
+    UFUNCTION(BlueprintCallable, Category = "Movement")
+    bool IsAiming() const;
+
     UPROPERTY(BlueprintAssignable);
     FOnResetDeathSignature OnResetPlayerDeathSignature;
 
@@ -104,6 +107,9 @@ protected:
     class UInputAction* DashAction;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
+    class UInputAction* AimAction;
+
+    UPROPERTY(EditAnywhere, Category = "EnhancedInput")
     class UInputAction* ThirstRemoveAction;
 
     UPROPERTY(EditAnywhere, Category = "EnhancedInput")
@@ -116,8 +122,12 @@ protected:
     class UInputAction* ScanAction;
 #pragma endregion
 
-private:
+protected:
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
     bool bWantsToWalk = false;
+
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
+    bool bIsAiming = false;
 
 #pragma region Dash
     FTimerHandle DashReseter;
@@ -149,6 +159,8 @@ private:
 
     void OnDash();
     void OnResetDash();
+
+    void ToggleAim();
 
     void OnThirstRemove();
     void ThirstRemoval(float HealthToRestore);
