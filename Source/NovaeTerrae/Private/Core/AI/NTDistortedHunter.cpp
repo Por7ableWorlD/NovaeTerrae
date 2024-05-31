@@ -23,21 +23,7 @@ void ANTDistortedHunter::BeginPlay()
 	Super::BeginPlay();
 
 	check(HealthComponent);
-
-    HealthComponent->OnDeath.AddDynamic(this, &ANTDistortedHunter::OnDeath);
 	
-}
-
-void ANTDistortedHunter::OnDeath(AActor* DeathCauser)
-{
-    AAIController* AIController = GetController<AAIController>();
-
-    if (!AIController)
-    {
-        return;
-    }
-
-    DetachFromControllerPendingDestroy();
 }
 
 

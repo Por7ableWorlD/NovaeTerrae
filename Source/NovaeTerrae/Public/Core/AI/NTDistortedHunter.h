@@ -21,7 +21,4 @@ protected:
 
 	virtual void BeginPlay() override;
 
-    UFUNCTION()
-    void OnDeath(AActor* DeathCauser);
-
 };
