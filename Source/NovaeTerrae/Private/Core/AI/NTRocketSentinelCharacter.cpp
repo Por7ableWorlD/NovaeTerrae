@@ -55,7 +55,7 @@ void ANTRocketSentinelCharacter::OnShieldEnable()
         return;
     }
 
-    HealthComponent->GameTags.AddTag(FStatusGameplayTags::Get().Invulnerability);
+    GameTags.AddTag(FStatusGameplayTags::Get().Invulnerability);
     if (GEngine)
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("Rocket Sentinel Shield Activated!"));
     GetWorld()->GetTimerManager().SetTimer(ShieldTimerHandle, this, &ANTRocketSentinelCharacter::OnShieldDisable, ShieldDuration, false);
@@ -63,7 +63,7 @@ void ANTRocketSentinelCharacter::OnShieldEnable()
 
 void ANTRocketSentinelCharacter::OnShieldDisable() 
 {
-    HealthComponent->GameTags.RemoveTag(FStatusGameplayTags::Get().Invulnerability);
+    GameTags.RemoveTag(FStatusGameplayTags::Get().Invulnerability);
     GetWorld()->GetTimerManager().ClearTimer(ShieldTimerHandle);
 
     if (GEngine)

@@ -54,7 +54,7 @@ public:
 
     FOnScanRequestSignature OnScanRequestSignature;
 
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Gameplay Tags")
+    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "GameplayTags")
     FGameplayTagContainer GameTags;
 
 protected:

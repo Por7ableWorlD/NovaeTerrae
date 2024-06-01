@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "GameplayTagContainer.h"
 #include "NTBaseEnemyCharacter.generated.h"
 
 class UNTEnemyHealthComponent;
@@ -18,6 +19,9 @@ public:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTEnemyHealthComponent* HealthComponent;
+
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "GameplayTags")
+    FGameplayTagContainer GameTags;
 
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataTables")

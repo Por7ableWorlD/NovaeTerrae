@@ -36,8 +36,6 @@ public:
 
     float GetDamageResistancePercentage() const { return DamageResistancePercentage; };
 
-    FGameplayTagContainer GameTags;
-
 protected:
     UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Behavior",
         meta = (EditCondition = "EnableActionThreshold", ClampMin = "0.1", ClampMax = "100.0"))

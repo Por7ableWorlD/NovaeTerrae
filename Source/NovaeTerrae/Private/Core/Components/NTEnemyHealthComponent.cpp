@@ -7,6 +7,7 @@
 #include "Core/Characters/NTBaseCharacter.h"
 #include <AIController.h>
 #include "Core/AI/NTWeakPoint.h"
+#include "Core/AI/NTBaseEnemyCharacter.h"
 #include <Core/Dev/GameplayTags/StatusGameplayTags.h>
 #include "GameFramework/Character.h"
 
@@ -32,7 +33,9 @@ void UNTEnemyHealthComponent::OnTakeAnyDamage(
         return;
     }
 
-    if (GameTags.HasTag(FStatusGameplayTags::Get().Invulnerability))
+    ANTBaseEnemyCharacter* Enemy = Cast<ANTBaseEnemyCharacter>(GetOwner());
+
+    if (Enemy && Enemy->GameTags.HasTag(FStatusGameplayTags::Get().Invulnerability))
     {
         return;
     }
