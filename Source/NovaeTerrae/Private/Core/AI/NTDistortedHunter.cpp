@@ -13,17 +13,6 @@ ANTDistortedHunter::ANTDistortedHunter()
 	bUseControllerRotationYaw = false;
 
     GetCharacterMovement()->bUseControllerDesiredRotation = true;
-
-    HealthComponent = CreateDefaultSubobject<UNTEnemyHealthComponent>("HealthComponent");
-
-}
-
-void ANTDistortedHunter::BeginPlay()
-{
-	Super::BeginPlay();
-
-	check(HealthComponent);
-	
 }
 
 

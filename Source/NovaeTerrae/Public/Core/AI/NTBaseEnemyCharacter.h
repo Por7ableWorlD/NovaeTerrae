@@ -23,4 +23,6 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataTables")
     FName DataTableRowName = "DefaultSettings";
 
+    virtual void BeginPlay() override;
+
 };

@@ -23,8 +23,6 @@ ANTEyeSentinelCharacter::ANTEyeSentinelCharacter()
     
     GetCharacterMovement()->bUseControllerDesiredRotation = true;
 
-    HealthComponent = CreateDefaultSubobject<UNTEnemyHealthComponent>("HealthComponent");
-
     SplineComponent = CreateDefaultSubobject<USplineComponent>("SplineComponent");
 }
 
@@ -32,7 +30,6 @@ void ANTEyeSentinelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
-    check(HealthComponent);
     check(SplineComponent);
 
     HealthComponent->OnDeath.AddDynamic(this, &ANTEyeSentinelCharacter::OnDeath);

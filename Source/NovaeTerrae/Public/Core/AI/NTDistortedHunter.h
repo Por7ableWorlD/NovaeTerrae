@@ -16,9 +16,4 @@ class NOVAETERRAE_API ANTDistortedHunter : public ANTBaseEnemyCharacter
 
 public:
 	ANTDistortedHunter();
-
-protected:
-
-	virtual void BeginPlay() override;
-
 };

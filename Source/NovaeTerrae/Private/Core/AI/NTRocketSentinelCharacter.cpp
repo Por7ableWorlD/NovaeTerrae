@@ -24,15 +24,11 @@ ANTRocketSentinelCharacter::ANTRocketSentinelCharacter()
 
     StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
     StaticMeshComponent->SetupAttachment(GetRootComponent());
-
-    HealthComponent = CreateDefaultSubobject<UNTEnemyHealthComponent>("HealthComponent");
 }
 
 void ANTRocketSentinelCharacter::BeginPlay()
 {
 	Super::BeginPlay();
-
-    check(HealthComponent);
 
     HealthComponent->OnDeath.AddDynamic(this, &ANTRocketSentinelCharacter::OnDeath);
 
