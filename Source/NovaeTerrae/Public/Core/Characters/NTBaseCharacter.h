@@ -129,6 +129,12 @@ protected:
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Movement")
     bool bIsAiming = false;
 
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sensitivity")
+    float MouseXAxisModifier = 1.0f;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Sensitivity")
+    float MouseYAxisModifier = 1.0f;
+
 #pragma region Dash
     FTimerHandle DashReseter;
     float ResetDashDelay = 1.5f;

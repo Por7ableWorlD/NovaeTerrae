@@ -180,9 +180,10 @@ void ANTBaseCharacter::Look(const FInputActionValue& InputValue)
     double inPitch = PlayerController->GetControlRotation().Pitch;
     double inYaw = PlayerController->GetControlRotation().Yaw;
 
-    inPitch = FMath::ClampAngle(inPitch + InputVector.Y * -1.0f, MinCameraAngle, MaxCameraAngle);
+    inPitch = FMath::ClampAngle(inPitch + InputVector.Y * -1.0f * MouseYAxisModifier, MinCameraAngle, MaxCameraAngle);
+    inYaw = inYaw + InputVector.X * MouseXAxisModifier;
 
-    PlayerController->SetControlRotation(FRotator(inPitch, inYaw + InputVector.X, inRoll));
+    PlayerController->SetControlRotation(FRotator(inPitch, inYaw, inRoll));
 
     // AddControllerYawInput(InputVector.X);
     // AddControllerPitchInput(InputVector.Y);
