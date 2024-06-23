@@ -26,9 +26,6 @@ public:
     ANTCompanionCharacter();
 
     UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
-    UStaticMeshComponent* StaticMeshComponent;
-
-    UPROPERTY(VisibleAnywhere, BlueprintReadWrite, Category = "Components")
     UNTCompanionHealthComponent* CompanionHealthComponent;
     
     FOnThirstRemoveStart OnThirstRemoveStart;

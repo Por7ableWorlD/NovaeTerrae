@@ -16,9 +16,6 @@ ANTCompanionCharacter::ANTCompanionCharacter()
 {
     PrimaryActorTick.bCanEverTick = true;
 
-    StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>("StaticMeshComponent");
-    StaticMeshComponent->SetupAttachment(GetRootComponent());
-
     CompanionHealthComponent = CreateDefaultSubobject<UNTCompanionHealthComponent>("CompanionHealthComponent");
 }
 
@@ -58,6 +55,16 @@ void ANTCompanionCharacter::OnThirstRemoveRequest()
             GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("ThirstRemoveThresholdReached"));
         return;
     }
+    
+    AAIController* AIController = GetController<AAIController>();
+
+    if (!AIController)
+    {
+        return;
+    }
+    if (GEngine)
+        GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("ThirstRemoveSuccessful"));
+    AIController->GetBlackboardComponent()->SetValueAsBool(FName("Sacrificing"), true);
 
     UGameplayStatics::ApplyDamage(this, ThirstRemoveCost, Controller, this, nullptr);
     OnThirstRemoveStart.Broadcast(ThirstRemoveHealthRestoration);
@@ -78,8 +85,16 @@ void ANTCompanionCharacter::OnSacrificeRequest()
             GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Red, TEXT("SacrificeOnCooldown"));
         return;
     }
+
+    AAIController* AIController = GetController<AAIController>();
+
+    if (!AIController)
+    {
+        return;
+    }
     if (GEngine)
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("SacrificeSuccessful"));
+    AIController->GetBlackboardComponent()->SetValueAsBool(FName("Sacrificing"), true);     
 
     OnSacrificeStart.Broadcast(HealthSacrifice);
     UGameplayStatics::ApplyDamage(this, SacrificeCost, Controller, this, nullptr);
@@ -109,8 +124,16 @@ void ANTCompanionCharacter::OnFastReloadRequest()
         return;
     }
     
+    AAIController* AIController = GetController<AAIController>();
+
+    if (!AIController)
+    {
+        return;
+    }
     if (GEngine)
         GEngine->AddOnScreenDebugMessage(-1, 3.0f, FColor::Green, TEXT("FastReloadSuccessful"));
+    AIController->GetBlackboardComponent()->SetValueAsBool(FName("FastReloading"), true);  
+
     OnFastReloadStart.Broadcast();
 
     GetWorld()->GetTimerManager().SetTimer(
