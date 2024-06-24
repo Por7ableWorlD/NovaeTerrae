@@ -168,14 +168,18 @@ protected:
 
     void ToggleAim();
 
+    UFUNCTION(BlueprintCallable, Category = "Abilities")
     void OnThirstRemove();
     void ThirstRemoval(float HealthToRestore);
 
+    UFUNCTION(BlueprintCallable, Category = "Abilities")
     void OnSacrifice();
     void SacrificingHeal(float SacrificedHealth);
 
+    UFUNCTION(BlueprintCallable, Category = "Abilities")
     void OnScan();
 
+    UFUNCTION(BlueprintCallable, Category = "Abilities")
     void OnFastReload();
 
     void OnResetDeath();

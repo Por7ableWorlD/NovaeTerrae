@@ -116,14 +116,6 @@ void ANTBaseCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCom
         PlayerInput->BindAction(WalkAction, ETriggerEvent::Completed, this, &ANTBaseCharacter::OnStopWalking);
 
         PlayerInput->BindAction(AimAction, ETriggerEvent::Started, this, &ANTBaseCharacter::ToggleAim);
-
-        PlayerInput->BindAction(ThirstRemoveAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnThirstRemove);
-
-        PlayerInput->BindAction(SacrificeAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnSacrifice);
-
-        PlayerInput->BindAction(FastReloadAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnFastReload);
-
-        PlayerInput->BindAction(ScanAction, ETriggerEvent::Started, this, &ANTBaseCharacter::OnScan);
     }
 }
 
