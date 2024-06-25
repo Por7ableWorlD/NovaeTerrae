@@ -71,11 +71,16 @@ protected:
     UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "DataTables")
     FName DataTableRowName = "DefaultSettings";
 
-private:
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CompanionSkills")
     bool CanSacrifice = true;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CompanionSkills")
     bool CanScan = true;
+
+    UPROPERTY(EditDefaultsOnly, BlueprintReadOnly, Category = "CompanionSkills")
     bool CanFastReload = true;
 
+private:
     FTimerHandle SacrificeReseter;
     FTimerHandle ScanReseter;
     FTimerHandle FastReloadReseter;
